@@ -1,0 +1,331 @@
+// CPMS — Construction Procurement & Management System
+// Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Auth ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  MANAGER
+  PM
+  SITE_ENGINEER
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(MANAGER)
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  managedProjects Project[]        @relation("ProjectManager")
+  indentsRaised   MaterialIndent[] @relation("IndentRaisedBy")
+  indentsApproved MaterialIndent[] @relation("IndentApprovedBy")
+  ordersCreated   PurchaseOrder[]  @relation("POCreatedBy")
+  grnsCreated     GoodsReceipt[]   @relation("GRNCreatedBy")
+}
+
+// ─── Vendor & Contracts ──────────────────────────────────────────────────────
+
+enum VendorStatus {
+  ACTIVE
+  INACTIVE
+  BLACKLISTED
+}
+
+model Vendor {
+  id           String       @id @default(cuid())
+  name         String
+  code         String       @unique
+  contactName  String
+  contactPhone String
+  contactEmail String
+  address      String
+  city         String
+  gstNumber    String?
+  panNumber    String?
+  rating       Float        @default(3.0)
+  status       VendorStatus @default(ACTIVE)
+  notes        String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Relations
+  contracts      VendorContract[]
+  purchaseOrders PurchaseOrder[]
+}
+
+// ─── Material Catalog ────────────────────────────────────────────────────────
+
+enum MaterialCategory {
+  STRUCTURAL
+  FINISHING
+  ELECTRICAL
+  PLUMBING
+  HARDWARE
+  SAFETY
+  OTHER
+}
+
+enum MaterialUnit {
+  KG
+  TONNE
+  BAG
+  PIECE
+  SQFT
+  SQMT
+  CUBIC_MT
+  LITRE
+  METER
+  ROLL
+}
+
+model Material {
+  id          String           @id @default(cuid())
+  name        String
+  code        String           @unique
+  category    MaterialCategory
+  unit        MaterialUnit
+  description String?
+  hsn         String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  // Relations
+  contracts      VendorContract[]
+  indentItems    IndentLineItem[]
+  poItems        POLineItem[]
+  siteInventory  SiteInventory[]
+}
+
+model VendorContract {
+  id             String    @id @default(cuid())
+  vendorId       String
+  materialId     String
+  negotiatedRate Float
+  minOrderQty    Float
+  taxPercent     Float     @default(18.0)
+  validFrom      DateTime
+  validTo        DateTime
+  terms          String?
+  isActive       Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  vendor   Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@unique([vendorId, materialId])
+}
+
+// ─── Projects & Sites ────────────────────────────────────────────────────────
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  code        String        @unique
+  location    String
+  client      String
+  budget      Float
+  startDate   DateTime
+  endDate     DateTime?
+  status      ProjectStatus @default(ACTIVE)
+  description String?
+  managerId   String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  manager       User?            @relation("ProjectManager", fields: [managerId], references: [id])
+  labourLogs    Labour[]
+  indents       MaterialIndent[]
+  siteInventory SiteInventory[]
+  purchaseOrders PurchaseOrder[]
+}
+
+model Labour {
+  id          String   @id @default(cuid())
+  projectId   String
+  date        DateTime @default(now())
+  labourType  String   // Mason, Carpenter, Helper, Electrician, Plumber
+  count       Int
+  dailyRate   Float
+  totalCost   Float
+  supervisorName String?
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+// ─── Procurement Engine ──────────────────────────────────────────────────────
+
+enum IndentStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  ORDERED
+}
+
+model MaterialIndent {
+  id          String       @id @default(cuid())
+  indentNo    String       @unique
+  projectId   String
+  raisedById  String
+  approvedById String?
+  status      IndentStatus @default(DRAFT)
+  urgency     String       @default("NORMAL") // LOW, NORMAL, HIGH, URGENT
+  requiredBy  DateTime
+  notes       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  project    Project  @relation(fields: [projectId], references: [id])
+  raisedBy   User     @relation("IndentRaisedBy", fields: [raisedById], references: [id])
+  approvedBy User?    @relation("IndentApprovedBy", fields: [approvedById], references: [id])
+  items      IndentLineItem[]
+  purchaseOrders PurchaseOrder[]
+}
+
+model IndentLineItem {
+  id           String  @id @default(cuid())
+  indentId     String
+  materialId   String
+  requestedQty Float
+  approvedQty  Float?
+  unit         String
+  remarks      String?
+
+  indent   MaterialIndent @relation(fields: [indentId], references: [id], onDelete: Cascade)
+  material Material       @relation(fields: [materialId], references: [id])
+}
+
+enum POStatus {
+  DRAFT
+  SENT
+  ACKNOWLEDGED
+  PARTIALLY_RECEIVED
+  RECEIVED
+  CANCELLED
+}
+
+model PurchaseOrder {
+  id          String   @id @default(cuid())
+  poNumber    String   @unique
+  vendorId    String
+  projectId   String
+  indentId    String?
+  createdById String
+  status      POStatus @default(DRAFT)
+  totalAmount Float    @default(0)
+  taxAmount   Float    @default(0)
+  grandTotal  Float    @default(0)
+  expectedDate DateTime
+  deliveryAddress String
+  paymentTerms    String?
+  notes           String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  vendor      Vendor         @relation(fields: [vendorId], references: [id])
+  project     Project        @relation(fields: [projectId], references: [id])
+  indent      MaterialIndent? @relation(fields: [indentId], references: [id])
+  createdBy   User           @relation("POCreatedBy", fields: [createdById], references: [id])
+  lineItems   POLineItem[]
+  receipts    GoodsReceipt[]
+}
+
+model POLineItem {
+  id           String @id @default(cuid())
+  poId         String
+  materialId   String
+  quantity     Float
+  unitRate     Float
+  taxPercent   Float  @default(18.0)
+  amount       Float
+  taxAmount    Float
+  totalAmount  Float
+  receivedQty  Float  @default(0)
+  remarks      String?
+
+  po       PurchaseOrder @relation(fields: [poId], references: [id], onDelete: Cascade)
+  material Material      @relation(fields: [materialId], references: [id])
+}
+
+enum GRNStatus {
+  DRAFT
+  CONFIRMED
+  REJECTED
+}
+
+model GoodsReceipt {
+  id          String    @id @default(cuid())
+  grnNumber   String    @unique
+  poId        String
+  createdById String
+  status      GRNStatus @default(DRAFT)
+  receivedDate DateTime @default(now())
+  vehicleNo   String?
+  driverName  String?
+  invoiceNo   String?
+  invoiceDate DateTime?
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  po        PurchaseOrder @relation(fields: [poId], references: [id])
+  createdBy User          @relation("GRNCreatedBy", fields: [createdById], references: [id])
+  items     GRNLineItem[]
+}
+
+model GRNLineItem {
+  id           String  @id @default(cuid())
+  grnId        String
+  materialId   String
+  orderedQty   Float
+  receivedQty  Float
+  acceptedQty  Float
+  rejectedQty  Float   @default(0)
+  unitRate     Float
+  totalAmount  Float
+  remarks      String?
+
+  grn      GoodsReceipt @relation(fields: [grnId], references: [id], onDelete: Cascade)
+}
+
+// ─── Site Inventory ──────────────────────────────────────────────────────────
+
+model SiteInventory {
+  id             String   @id @default(cuid())
+  projectId      String
+  materialId     String
+  currentStock   Float    @default(0)
+  consumedStock  Float    @default(0)
+  wastedStock    Float    @default(0)
+  unit           String
+  lastUpdated    DateTime @default(now())
+
+  project  Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  material Material @relation(fields: [materialId], references: [id])
+
+  @@unique([projectId, materialId])
+}
