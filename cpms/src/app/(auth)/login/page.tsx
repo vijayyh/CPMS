@@ -176,6 +176,19 @@ export default function LoginPage() {
               )}
             </button>
 
+            <div className="social-divider">or continue with</div>
+
+            <div className="social-btn-group">
+              <button type="button" className="social-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 11.2 21.9 10.4 21.7 9.7H12V14.1H17.8C17.5 15.6 16.3 16.7 14.8 17.2V17.2C13.9 17.5 13 17.7 12 17.7C8.7 17.7 6 15 6 11.7C6 10.7 6.3 9.7 6.8 8.9L10.3 12.4L8.3 14.4C7.5 13 7 11.4 7 9.7C7 6.9 9.2 4.7 12 4.7C13.5 4.7 14.8 5.3 15.7 6.2L19.2 2.7C17.3 1.1 14.8 0 12 0C5.4 0 0 5.4 0 12C0 18.6 5.4 24 12 24V22Z" fill="currentColor" stroke="none" /></svg>
+                Google
+              </button>
+              <button type="button" className="social-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                Phone
+              </button>
+            </div>
+
           </form>
           
           <div style={{ textAlign: "center", marginBottom: "32px", fontSize: "14px", color: "var(--text-muted)" }}>
