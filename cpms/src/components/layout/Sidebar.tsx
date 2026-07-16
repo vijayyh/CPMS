@@ -7,9 +7,9 @@ import {
   LayoutDashboard, Building2, Package, ShoppingCart, FolderKanban,
   BarChart3, ChevronDown, ChevronRight, HardHat, ClipboardList,
   FileText, Truck, Users, Settings, LogOut, PanelLeftClose, PanelLeftOpen,
-  Star, Hexagon, Mail, Phone
+  Star, Hexagon, Mail, Phone, IndianRupee, CheckCircle2, Calendar
 } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 type NavItem = {
   label: string;
@@ -42,8 +42,24 @@ const NAV: NavItem[] = [
   { label: "Reports", href: "/reports", icon: <BarChart3 size={18} /> },
 ];
 
+const EMPLOYEE_NAV: NavItem[] = [
+  { label: "Dashboard", href: "/employee/dashboard", icon: <LayoutDashboard size={18} /> },
+  { label: "My Attendance", href: "/employee/attendance", icon: <ClipboardList size={18} /> },
+  { label: "My Daily Wages", href: "/employee/wages", icon: <IndianRupee size={18} /> },
+  { label: "My Assigned Project", href: "/employee/my-project", icon: <Building2 size={18} /> },
+  { label: "Today's Tasks", href: "/employee/tasks", icon: <CheckCircle2 size={18} /> },
+  { label: "Announcements", href: "/employee/announcements", icon: <Mail size={18} /> },
+  { label: "Leave Requests", href: "/employee/leave", icon: <Calendar size={18} /> },
+  { label: "Profile", href: "/employee/profile", icon: <Users size={18} /> },
+];
+
 export default function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const userRole = (session?.user as any)?.role || "MANAGER";
+  const isEmployee = userRole === "EMPLOYEE";
+  const currentNav = isEmployee ? EMPLOYEE_NAV : NAV;
+  
   const [collapsed, setCollapsed] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     Procurement: true,
@@ -96,7 +112,7 @@ export default function Sidebar() {
         <nav className="sidebar-nav">
           {!collapsed && <div className="sidebar-section-title">Main Menu</div>}
 
-          {NAV.map((item) => {
+          {currentNav.map((item) => {
             if (item.href) {
               const active = isActive(item.href);
               return (
@@ -158,10 +174,12 @@ export default function Sidebar() {
 
         {/* Footer */}
         <div className="sidebar-footer">
-          <Link href="/settings" className="nav-item" title={collapsed ? "Settings" : undefined}>
-            <span className="nav-icon"><Settings size={18} /></span>
-            {!collapsed && <span className="nav-label">Settings</span>}
-          </Link>
+          {!isEmployee && (
+            <Link href="/settings" className="nav-item" title={collapsed ? "Settings" : undefined}>
+              <span className="nav-icon"><Settings size={18} /></span>
+              {!collapsed && <span className="nav-label">Settings</span>}
+            </Link>
+          )}
           <button
             className="nav-item nav-logout"
             onClick={() => signOut({ callbackUrl: "/login" })}

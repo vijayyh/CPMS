@@ -39,6 +39,10 @@ model User {
   indentsApproved MaterialIndent[] @relation("IndentApprovedBy")
   ordersCreated   PurchaseOrder[]  @relation("POCreatedBy")
   grnsCreated     GoodsReceipt[]   @relation("GRNCreatedBy")
+  attendances     Attendance[]
+  dailyWages      DailyWage[]
+  tasks           EmployeeTask[]
+  leaveRequests   LeaveRequest[]
 }
 
 // ─── Vendor & Contracts ──────────────────────────────────────────────────────
@@ -163,6 +167,7 @@ model Project {
   indents       MaterialIndent[]
   siteInventory SiteInventory[]
   purchaseOrders PurchaseOrder[]
+  employeeTasks  EmployeeTask[]
 }
 
 model Labour {
@@ -332,4 +337,105 @@ model SiteInventory {
   material Material @relation(fields: [materialId], references: [id])
 
   @@unique([projectId, materialId])
+}
+
+// ─── Employee & HR ──────────────────────────────────────────────────────────
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+}
+
+model Attendance {
+  id          String           @id @default(cuid())
+  userId      String
+  date        DateTime         @default(now())
+  clockIn     DateTime?
+  clockOut    DateTime?
+  status      AttendanceStatus @default(PRESENT)
+  hoursWorked Float            @default(0)
+  overtime    Float            @default(0)
+  notes       String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum PaymentStatus {
+  PAID
+  PENDING
+  PROCESSING
+}
+
+model DailyWage {
+  id            String        @id @default(cuid())
+  userId        String
+  date          DateTime      @default(now())
+  amount        Float
+  status        PaymentStatus @default(PENDING)
+  expectedDate  DateTime?
+  paymentDate   DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model EmployeeTask {
+  id          String     @id @default(cuid())
+  userId      String
+  title       String
+  description String?
+  status      TaskStatus @default(PENDING)
+  dueDate     DateTime?
+  progress    Float      @default(0)
+  projectId   String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project? @relation(fields: [projectId], references: [id])
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum LeaveType {
+  CASUAL
+  SICK
+  PAID
+}
+
+model LeaveRequest {
+  id        String      @id @default(cuid())
+  userId    String
+  startDate DateTime
+  endDate   DateTime
+  type      LeaveType
+  status    LeaveStatus @default(PENDING)
+  reason    String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  type      String   @default("GENERAL") // GENERAL, SAFETY, HOLIDAY
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
