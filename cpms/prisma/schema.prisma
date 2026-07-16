@@ -17,6 +17,10 @@ enum Role {
   MANAGER
   PM
   SITE_ENGINEER
+  PROCUREMENT
+  ACCOUNTS
+  VENDOR
+  EMPLOYEE
 }
 
 model User {

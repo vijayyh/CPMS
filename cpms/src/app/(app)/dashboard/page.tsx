@@ -52,9 +52,12 @@ export default function DashboardPage() {
   const isAdmin = userRole === "ADMIN" || userRole === "MANAGER";
   const isSiteEngineer = userRole === "SITE_ENGINEER";
   const isAccounts = userRole === "ACCOUNTS";
+  const isProcurement = userRole === "PROCUREMENT";
+  const isVendor = userRole === "VENDOR";
 
   const canSeeEngineering = isAdmin || isSiteEngineer;
   const canSeeFinance = isAdmin || isAccounts;
+  const canSeeProcurement = isAdmin || isProcurement;
 
   const router = useRouter();
 

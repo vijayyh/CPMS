@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, Lock, Mail, User, AlertCircle, Loader2, HardHat, Sun, Moon } from "lucide-react";
+import { Building2, Lock, Mail, User, AlertCircle, Loader2, HardHat, Sun, Moon, ShieldCheck, ShoppingCart, Calculator, Truck } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -12,8 +12,17 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("MANAGER");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const ROLES = [
+    { id: "MANAGER", label: "Manager", icon: ShieldCheck },
+    { id: "SITE_ENGINEER", label: "Site Engineer", icon: HardHat },
+    { id: "PROCUREMENT", label: "Procurement", icon: ShoppingCart },
+    { id: "ACCOUNTS", label: "Accounts", icon: Calculator },
+    { id: "VENDOR", label: "Vendor", icon: Truck },
+  ];
 
   // Theme Management
   const [isDark, setIsDark] = useState(false);
@@ -51,6 +60,7 @@ export default function SignupPage() {
           name,
           email,
           password,
+          role,
         }),
       });
 
@@ -128,10 +138,48 @@ export default function SignupPage() {
               <Building2 size={20} />
             </div>
             <h2>Create an Account</h2>
-            <p>Enter your details below to set up your workspace</p>
+            <p>Select your role and set up your workspace</p>
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
+            <div className="role-selection" style={{ marginBottom: 24 }}>
+              <label className="form-label">Select Your Role</label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '8px' }}>
+                {ROLES.map((r) => {
+                  const Icon = r.icon;
+                  const isSelected = role === r.id;
+                  return (
+                    <div 
+                      key={r.id}
+                      onClick={() => setRole(r.id)}
+                      style={{
+                        padding: '10px',
+                        borderRadius: '12px',
+                        border: `1px solid ${isSelected ? 'var(--brand-primary)' : 'var(--bg-border-strong)'}`,
+                        background: isSelected ? 'var(--brand-glow)' : 'var(--bg-card)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        transition: 'all 0.2s',
+                        color: isSelected ? 'var(--brand-primary)' : 'var(--text-primary)'
+                      }}
+                    >
+                      <div style={{
+                        padding: '6px',
+                        borderRadius: '8px',
+                        background: isSelected ? 'var(--brand-primary)' : 'var(--bg-elevated)',
+                        color: isSelected ? '#FFFFFF' : 'var(--text-muted)',
+                        display: 'flex'
+                      }}>
+                        <Icon size={16} />
+                      </div>
+                      <span style={{ fontSize: '13px', fontWeight: 600 }}>{r.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
             <div className="form-group">
               <label className="form-label">Full Name</label>
               <div style={{ position: "relative" }}>
