@@ -229,15 +229,15 @@ a { color: inherit; text-decoration: none; }
 }
 
 .btn-primary {
-  background: var(--brand-primary);
-  color: #FFFFFF;
-  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+  background: var(--text-title);
+  color: var(--bg-card-solid);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .btn-primary:hover {
-  background: #FF8559;
+  opacity: 0.9;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary {
