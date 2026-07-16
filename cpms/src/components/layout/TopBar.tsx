@@ -1,7 +1,7 @@
 "use client";
 
 import { Bell, Search, ChevronDown, Sun, Moon, Plus, Settings, LogOut, FileText, AlertCircle, ShoppingCart } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { signOut } from "next-auth/react";
 import { getInitials } from "@/lib/utils";
 import { usePathname } from "next/navigation";
@@ -56,6 +56,28 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
   const [isNewOpen, setIsNewOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+  const newRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (newRef.current && !newRef.current.contains(event.target as Node)) {
+        setIsNewOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setIsNotifOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // Theme Management
   const [isDark, setIsDark] = useState(false);
 
@@ -103,9 +125,10 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
         </div>
 
         {/* Right: Actions */}
-        <div className="topbar-right">
+        <div className="topbar-actions">
           
-          <div className="relative">
+          {/* Quick Create */}
+          <div className="relative" ref={newRef}>
             <button className="btn-pill quick-add" onClick={() => setIsNewOpen(!isNewOpen)}>
               <Plus size={16} />
               <span>New</span>
@@ -136,7 +159,7 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
           </button>
 
           {/* Notifications */}
-          <div className="relative">
+          <div className="relative" ref={notifRef}>
             <button className="btn-icon" onClick={() => setIsNotifOpen(!isNotifOpen)}>
               <Bell size={18} />
               {unreadCount > 0 && (
@@ -173,7 +196,7 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
           </div>
 
           {/* Profile */}
-          <div className="relative">
+          <div className="relative" ref={profileRef}>
             <div className="profile-pill" onClick={() => setIsProfileOpen(!isProfileOpen)}>
               <div className="profile-avatar">{getInitials(userName)}</div>
               <div className="profile-info">
