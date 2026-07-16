@@ -4,21 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
-  LayoutDashboard,
-  Building2,
-  Package,
-  ShoppingCart,
-  FolderKanban,
-  BarChart3,
-  ChevronDown,
-  ChevronRight,
-  HardHat,
-  ClipboardList,
-  FileText,
-  Truck,
-  Users,
-  Settings,
-  LogOut,
+  LayoutDashboard, Building2, Package, ShoppingCart, FolderKanban,
+  BarChart3, ChevronDown, ChevronRight, HardHat, ClipboardList,
+  FileText, Truck, Users, Settings, LogOut, PanelLeftClose, PanelLeftOpen,
+  Star, Hexagon, Mail, Phone
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -27,58 +16,43 @@ type NavItem = {
   href?: string;
   icon: React.ReactNode;
   children?: { label: string; href: string; icon: React.ReactNode }[];
-  badge?: string;
 };
 
 const NAV: NavItem[] = [
-  {
-    label: "Dashboard",
-    href:  "/dashboard",
-    icon:  <LayoutDashboard size={17} />,
-  },
-  {
-    label: "Vendors",
-    href:  "/vendors",
-    icon:  <Building2 size={17} />,
-  },
-  {
-    label: "Materials",
-    href:  "/materials",
-    icon:  <Package size={17} />,
-  },
+  { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
+  { label: "Vendors", href: "/vendors", icon: <Building2 size={18} /> },
+  { label: "Materials", href: "/materials", icon: <Package size={18} /> },
   {
     label: "Procurement",
-    icon:  <ShoppingCart size={17} />,
+    icon: <ShoppingCart size={18} />,
     children: [
-      { label: "Material Indents", href: "/procurement/indents", icon: <ClipboardList size={15} /> },
-      { label: "Purchase Orders",  href: "/procurement/orders",  icon: <FileText size={15} /> },
-      { label: "Goods Receipts",   href: "/procurement/grn",     icon: <Truck size={15} /> },
+      { label: "Material Indents", href: "/procurement/indents", icon: <ClipboardList size={16} /> },
+      { label: "Purchase Orders", href: "/procurement/orders", icon: <FileText size={16} /> },
+      { label: "Goods Receipts", href: "/procurement/grn", icon: <Truck size={16} /> },
     ],
   },
   {
     label: "Projects & Sites",
-    icon:  <FolderKanban size={17} />,
+    icon: <FolderKanban size={18} />,
     children: [
-      { label: "All Projects", href: "/projects",        icon: <FolderKanban size={15} /> },
-      { label: "Labour Logs",  href: "/projects/labour", icon: <Users size={15} /> },
+      { label: "All Projects", href: "/projects", icon: <FolderKanban size={16} /> },
+      { label: "Labour Logs", href: "/projects/labour", icon: <Users size={16} /> },
     ],
   },
-  {
-    label: "Reports",
-    href:  "/reports",
-    icon:  <BarChart3 size={17} />,
-  },
+  { label: "Reports", href: "/reports", icon: <BarChart3 size={18} /> },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [open, setOpen] = useState<Record<string, boolean>>({
-    Procurement:       true,
+  const [collapsed, setCollapsed] = useState(false);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
+    Procurement: true,
     "Projects & Sites": true,
   });
 
-  function toggle(label: string) {
-    setOpen((prev) => ({ ...prev, [label]: !prev[label] }));
+  function toggleGroup(label: string) {
+    if (collapsed) setCollapsed(false);
+    setOpenGroups((prev) => ({ ...prev, [label]: !prev[label] }));
   }
 
   function isActive(href: string) {
@@ -86,290 +60,450 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="sidebar">
-      {/* Brand */}
-      <div className="sidebar-brand">
-        <div className="sidebar-logo">
-          <HardHat size={20} />
-        </div>
-        <div>
-          <div className="sidebar-brand-name">CPMS</div>
-          <div className="sidebar-brand-sub">Construction Platform</div>
-        </div>
-      </div>
-
-      {/* Nav */}
-      <nav className="sidebar-nav">
-        <div className="sidebar-section-label">Navigation</div>
-
-        {NAV.map((item) => {
-          if (item.href) {
-            const active = isActive(item.href);
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`sidebar-link ${active ? "active" : ""}`}
-              >
-                <span className="sidebar-link-icon">{item.icon}</span>
-                <span className="sidebar-link-label">{item.label}</span>
-                {active && <span className="sidebar-active-bar" />}
-              </Link>
-            );
-          }
-
-          // Group with children
-          const isOpen = open[item.label] ?? false;
-          const childActive = item.children?.some((c) => isActive(c.href));
-
-          return (
-            <div key={item.label}>
-              <button
-                className={`sidebar-group-btn ${childActive ? "child-active" : ""}`}
-                onClick={() => toggle(item.label)}
-              >
-                <span className="sidebar-link-icon">{item.icon}</span>
-                <span className="sidebar-link-label">{item.label}</span>
-                <span className="sidebar-chevron">
-                  {isOpen ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
-                </span>
-              </button>
-
-              {isOpen && (
-                <div className="sidebar-children">
-                  {item.children?.map((child) => {
-                    const active = isActive(child.href);
-                    return (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        className={`sidebar-child-link ${active ? "active" : ""}`}
-                      >
-                        <span className="sidebar-child-icon">{child.icon}</span>
-                        {child.label}
-                        {active && <span className="sidebar-active-bar" />}
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
+    <div className="sidebar-wrapper">
+      <aside className={`sidebar glass-panel ${collapsed ? 'collapsed' : ''}`}>
+        
+        {/* Workspace Selector (Header) */}
+        <div className="sidebar-header">
+          <div className="sidebar-logo-box">
+            <Hexagon size={20} strokeWidth={2.5} />
+          </div>
+          {!collapsed && (
+            <div className="sidebar-workspace">
+              <span className="workspace-name">CPMS Enterprise</span>
+              <span className="workspace-role">Admin Workspace</span>
             </div>
-          );
-        })}
-      </nav>
+          )}
+          <button className="sidebar-collapse-btn" onClick={() => setCollapsed(!collapsed)}>
+            {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+          </button>
+        </div>
 
-      {/* Bottom */}
-      <div className="sidebar-bottom">
+        {/* Pinned / Favorites (Optional section for premium feel) */}
+        {!collapsed && (
+          <div className="sidebar-favorites">
+            <div className="sidebar-section-title">Pinned</div>
+            <Link href="/projects" className="favorite-link">
+              <Star size={14} className="favorite-icon" />
+              <span>Skyline Tower A</span>
+            </Link>
+          </div>
+        )}
+
         <div className="sidebar-divider" />
-        <Link href="/settings" className="sidebar-link">
-          <span className="sidebar-link-icon"><Settings size={16} /></span>
-          <span className="sidebar-link-label">Settings</span>
-        </Link>
-        <button
-          className="sidebar-link sidebar-logout"
-          onClick={() => signOut({ callbackUrl: "/login" })}
-        >
-          <span className="sidebar-link-icon"><LogOut size={16} /></span>
-          <span className="sidebar-link-label">Sign Out</span>
-        </button>
-      </div>
+
+        {/* Navigation */}
+        <nav className="sidebar-nav">
+          {!collapsed && <div className="sidebar-section-title">Main Menu</div>}
+
+          {NAV.map((item) => {
+            if (item.href) {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={`nav-item ${active ? "active" : ""}`}
+                  title={collapsed ? item.label : undefined}
+                >
+                  <span className="nav-icon">{item.icon}</span>
+                  {!collapsed && <span className="nav-label">{item.label}</span>}
+                  {active && !collapsed && <span className="active-glow" />}
+                </Link>
+              );
+            }
+
+            const isOpen = openGroups[item.label] ?? false;
+            const childActive = item.children?.some((c) => isActive(c.href));
+
+            return (
+              <div key={item.label} className="nav-group">
+                <button
+                  className={`nav-item ${childActive ? "child-active" : ""}`}
+                  onClick={() => toggleGroup(item.label)}
+                  title={collapsed ? item.label : undefined}
+                >
+                  <span className="nav-icon">{item.icon}</span>
+                  {!collapsed && (
+                    <>
+                      <span className="nav-label">{item.label}</span>
+                      <span className="nav-chevron">
+                        {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                      </span>
+                    </>
+                  )}
+                </button>
+
+                {!collapsed && isOpen && (
+                  <div className="nav-children">
+                    {item.children?.map((child) => {
+                      const active = isActive(child.href);
+                      return (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className={`nav-child-item ${active ? "active" : ""}`}
+                        >
+                          <span className="nav-child-icon">{child.icon}</span>
+                          <span className="nav-child-label">{child.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+
+        {/* Footer */}
+        <div className="sidebar-footer">
+          <Link href="/settings" className="nav-item" title={collapsed ? "Settings" : undefined}>
+            <span className="nav-icon"><Settings size={18} /></span>
+            {!collapsed && <span className="nav-label">Settings</span>}
+          </Link>
+          <button
+            className="nav-item nav-logout"
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            title={collapsed ? "Log Out" : undefined}
+          >
+            <span className="nav-icon"><LogOut size={18} /></span>
+            {!collapsed && <span className="nav-label">Log Out</span>}
+          </button>
+
+          {!collapsed && (
+            <div className="sidebar-company-info">
+              <div className="company-info-title">CPMS Support</div>
+              <div className="company-info-item">
+                <Mail size={12} /> support@cpms.com
+              </div>
+              <div className="company-info-item">
+                <Phone size={12} /> +1 (800) 555-0199
+              </div>
+            </div>
+          )}
+        </div>
+      </aside>
 
       <style>{`
+        .sidebar-wrapper {
+          padding: 16px 0 16px 16px; /* Floating offset */
+          height: 100vh;
+          display: flex;
+          flex-shrink: 0;
+          z-index: 50;
+        }
+
         .sidebar {
           width: var(--sidebar-width);
-          background: var(--bg-surface);
-          border-right: 1px solid var(--bg-border);
+          height: 100%;
           display: flex;
           flex-direction: column;
-          height: 100%;
-          flex-shrink: 0;
+          transition: width var(--transition-base);
           overflow: hidden;
         }
 
-        .sidebar-brand {
+        .sidebar.collapsed {
+          width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 20px 18px;
-          border-bottom: 1px solid var(--bg-border);
+          padding: 20px;
+          position: relative;
         }
 
-        .sidebar-logo {
-          width: 38px;
-          height: 38px;
-          background: var(--brand-amber);
-          border-radius: 10px;
+        .sidebar.collapsed .sidebar-header {
+          justify-content: center;
+          padding: 20px 12px;
+        }
+
+        .sidebar-logo-box {
+          width: 40px;
+          height: 40px;
+          background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+          color: white;
+          border-radius: 12px;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #000;
           flex-shrink: 0;
+          box-shadow: 0 4px 12px var(--brand-glow);
         }
 
-        .sidebar-brand-name {
+        .sidebar-workspace {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          min-width: 0;
+        }
+
+        .workspace-name {
+          font-weight: 700;
           font-size: 15px;
-          font-weight: 800;
-          color: var(--text-primary);
-          letter-spacing: -0.3px;
-        }
-
-        .sidebar-brand-sub {
-          font-size: 10px;
-          color: var(--text-disabled);
-          font-weight: 500;
-          text-transform: uppercase;
-          letter-spacing: 0.4px;
-        }
-
-        .sidebar-nav {
-          flex: 1;
-          overflow-y: auto;
-          padding: 12px 10px;
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-        }
-
-        .sidebar-section-label {
-          font-size: 10px;
-          color: var(--text-disabled);
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.6px;
-          padding: 8px 10px 4px;
-          margin-bottom: 2px;
-        }
-
-        .sidebar-link,
-        .sidebar-group-btn {
-          display: flex;
-          align-items: center;
-          gap: 9px;
-          padding: 9px 10px;
-          border-radius: var(--radius-md);
-          font-size: 13.5px;
-          font-weight: 500;
-          color: var(--text-secondary);
-          text-decoration: none;
-          cursor: pointer;
-          border: none;
-          background: transparent;
-          font-family: var(--font-sans);
-          width: 100%;
-          text-align: left;
-          transition: all var(--transition-fast);
-          position: relative;
-        }
-
-        .sidebar-link:hover,
-        .sidebar-group-btn:hover {
-          background: var(--bg-elevated);
-          color: var(--text-primary);
-        }
-
-        .sidebar-link.active {
-          background: var(--brand-amber-muted);
-          color: var(--brand-amber);
-          font-weight: 600;
-          border: 1px solid rgba(245,158,11,0.12);
-        }
-
-        .sidebar-group-btn.child-active {
-          color: var(--text-primary);
-        }
-
-        .sidebar-link-icon {
-          display: flex;
-          align-items: center;
-          flex-shrink: 0;
-          opacity: 0.8;
-        }
-
-        .sidebar-link.active .sidebar-link-icon {
-          opacity: 1;
-        }
-
-        .sidebar-link-label {
-          flex: 1;
+          color: var(--text-title);
           white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
-        .sidebar-chevron {
-          display: flex;
-          align-items: center;
+        .workspace-role {
+          font-size: 11px;
+          font-weight: 600;
+          color: var(--brand-primary);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .sidebar-collapse-btn {
+          background: transparent;
+          border: none;
           color: var(--text-muted);
-          transition: transform var(--transition-fast);
-        }
-
-        .sidebar-active-bar {
-          width: 3px;
-          height: 16px;
-          background: var(--brand-amber);
-          border-radius: 2px;
-          position: absolute;
-          right: 8px;
-        }
-
-        .sidebar-children {
-          padding-left: 14px;
-          margin-top: 2px;
-          display: flex;
-          flex-direction: column;
-          gap: 1px;
-          border-left: 1px solid var(--bg-border);
-          margin-left: 18px;
-        }
-
-        .sidebar-child-link {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 7px 10px;
-          border-radius: var(--radius-md);
-          font-size: 12.5px;
-          font-weight: 500;
-          color: var(--text-muted);
-          text-decoration: none;
+          cursor: pointer;
+          padding: 6px;
+          border-radius: var(--radius-sm);
           transition: all var(--transition-fast);
-          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
-        .sidebar-child-link:hover {
-          background: var(--bg-elevated);
+        .sidebar-collapse-btn:hover {
+          background: var(--bg-hover);
           color: var(--text-primary);
         }
 
-        .sidebar-child-link.active {
-          background: var(--brand-amber-muted);
-          color: var(--brand-amber);
-          font-weight: 600;
+        .sidebar.collapsed .sidebar-collapse-btn {
+          position: absolute;
+          right: -12px;
+          top: 28px;
+          background: var(--bg-card-solid);
+          border: 1px solid var(--bg-border);
+          border-radius: 50%;
+          box-shadow: var(--shadow-float-sm);
+          opacity: 0;
         }
 
-        .sidebar-child-icon {
-          display: flex;
-          align-items: center;
-          opacity: 0.75;
-        }
-
-        .sidebar-bottom {
-          padding: 10px 10px 16px;
+        .sidebar.collapsed:hover .sidebar-collapse-btn {
+          opacity: 1;
+          right: -12px;
         }
 
         .sidebar-divider {
           height: 1px;
           background: var(--bg-border);
+          margin: 0 20px;
+        }
+
+        .sidebar-favorites {
+          padding: 16px 20px;
+        }
+
+        .sidebar-section-title {
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--text-muted);
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          margin-bottom: 8px;
+          padding-left: 12px;
+        }
+
+        .favorite-link {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--text-secondary);
+          padding: 8px 12px;
+          border-radius: var(--radius-md);
+          transition: all var(--transition-fast);
+        }
+
+        .favorite-link:hover {
+          background: var(--bg-hover);
+          color: var(--text-primary);
+        }
+
+        .favorite-icon {
+          color: var(--color-warning);
+        }
+
+        .sidebar-nav {
+          flex: 1;
+          overflow-y: auto;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .sidebar.collapsed .sidebar-nav {
+          padding: 20px 12px;
+          align-items: center;
+        }
+
+        .nav-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 10px 14px;
+          border-radius: var(--radius-md);
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--text-secondary);
+          background: transparent;
+          border: none;
+          width: 100%;
+          cursor: pointer;
+          transition: all var(--transition-fast);
+          position: relative;
+          text-align: left;
+        }
+
+        .sidebar.collapsed .nav-item {
+          justify-content: center;
+          padding: 12px;
+          width: 44px;
+          height: 44px;
+          border-radius: var(--radius-lg);
           margin-bottom: 8px;
         }
 
-        .sidebar-logout {
+        .nav-item:hover {
+          background: var(--bg-hover);
+          color: var(--text-primary);
+        }
+
+        .nav-item.active {
+          background: var(--brand-glow);
+          color: var(--brand-primary);
+          box-shadow: inset 0 0 0 1px rgba(255,107,53,0.2);
+          font-weight: 600;
+        }
+
+        .sidebar.collapsed .nav-item.active {
+          background: var(--brand-primary);
+          color: white;
+          box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+        }
+
+        .nav-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .nav-label {
+          flex: 1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .nav-chevron {
           color: var(--text-muted);
         }
 
-        .sidebar-logout:hover {
-          background: var(--color-danger-bg);
+        .active-glow {
+          position: absolute;
+          right: 8px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 6px;
+          height: 6px;
+          background: var(--brand-primary);
+          border-radius: 50%;
+          box-shadow: 0 0 8px var(--brand-primary);
+        }
+
+        .nav-children {
+          padding: 4px 0 4px 38px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .nav-child-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 8px 12px;
+          border-radius: var(--radius-md);
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--text-muted);
+          transition: all var(--transition-fast);
+        }
+
+        .nav-child-item:hover {
+          color: var(--text-primary);
+          background: var(--bg-hover);
+        }
+
+        .nav-child-item.active {
+          color: var(--brand-primary);
+          font-weight: 600;
+        }
+
+        .nav-child-icon {
+          opacity: 0.7;
+        }
+
+        .sidebar-footer {
+          padding: 20px;
+          border-top: 1px solid var(--bg-border);
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .sidebar.collapsed .sidebar-footer {
+          padding: 20px 12px;
+          align-items: center;
+        }
+
+        .nav-logout:hover {
           color: var(--color-danger);
+          background: rgba(239, 68, 68, 0.1);
+        }
+
+        .sidebar-company-info {
+          margin-top: 12px;
+          padding: 12px;
+          border-radius: var(--radius-md);
+          background: var(--bg-hover);
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .company-info-title {
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--text-muted);
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 2px;
+        }
+
+        .company-info-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 12px;
+          color: var(--text-secondary);
+          font-weight: 500;
+        }
+
+        .company-info-item svg {
+          color: var(--text-muted);
         }
       `}</style>
-    </aside>
+    </div>
   );
 }
