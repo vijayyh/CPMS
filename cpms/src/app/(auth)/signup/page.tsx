@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Building2, Lock, Mail, User, AlertCircle, Loader2, HardHat } from "lucide-react";
+import { Building2, Lock, Mail, User, AlertCircle, Loader2, HardHat, Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -14,6 +14,27 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Theme Management
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    if (document.documentElement.classList.contains('dark')) {
+      setIsDark(true);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setIsDark(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
+    }
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -54,11 +75,22 @@ export default function SignupPage() {
 
       {/* Left panel */}
       <div className="login-left">
-        <div className="login-brand">
-          <div className="login-logo">
-            <HardHat size={28} />
+        <div className="login-brand" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="login-logo">
+              <Building2 size={24} />
+            </div>
+            <span className="login-brand-name">CPMS</span>
           </div>
-          <span className="login-brand-name">CPMS</span>
+          
+          <button 
+            onClick={toggleTheme} 
+            className="btn-icon theme-toggle" 
+            title="Toggle Theme"
+            style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'inherit', padding: '8px', borderRadius: '50%', cursor: 'pointer', display: 'flex' }}
+          >
+            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
         </div>
 
         <div className="login-hero">
@@ -69,10 +101,10 @@ export default function SignupPage() {
           <h1 className="login-hero-title">
             Start Building
             <br />
-            <span className="login-hero-accent">With Confidence.</span>
+            <span className="login-hero-accent">With Sustaniq.</span>
           </h1>
-          <p className="login-hero-desc">
-            Join the future of construction management. Streamline operations and get complete visibility over your supply chain.
+          <p className="login-hero-desc" style={{ fontSize: '15px', lineHeight: '1.6' }}>
+            CPMS is an internal web-based construction management platform for Sustaniq Civilcon LLP and associated entities. It covers the complete project lifecycle: scope definition, procurement, site execution, quality control, labour management, subcontractor billing, and management reporting — across 10+ simultaneous construction sites in Mumbai.
           </p>
         </div>
 
