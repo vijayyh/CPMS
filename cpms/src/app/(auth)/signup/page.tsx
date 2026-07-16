@@ -22,6 +22,7 @@ export default function SignupPage() {
     { id: "PROCUREMENT", label: "Procurement", icon: ShoppingCart },
     { id: "ACCOUNTS", label: "Accounts", icon: Calculator },
     { id: "VENDOR", label: "Vendor", icon: Truck },
+    { id: "EMPLOYEE", label: "Employee / Worker", icon: User },
   ];
 
   // Theme Management
@@ -142,42 +143,48 @@ export default function SignupPage() {
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
-            <div className="role-selection" style={{ marginBottom: 24 }}>
+            <div className="form-group" style={{ marginBottom: 24 }}>
               <label className="form-label">Select Your Role</label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '8px' }}>
-                {ROLES.map((r) => {
-                  const Icon = r.icon;
-                  const isSelected = role === r.id;
+              <div style={{ position: "relative" }}>
+                {(() => {
+                  const SelectedIcon = ROLES.find(r => r.id === role)?.icon || User;
                   return (
-                    <div 
-                      key={r.id}
-                      onClick={() => setRole(r.id)}
+                    <SelectedIcon
+                      size={15}
                       style={{
-                        padding: '10px',
-                        borderRadius: '12px',
-                        border: `1px solid ${isSelected ? 'var(--brand-primary)' : 'var(--bg-border-strong)'}`,
-                        background: isSelected ? 'var(--brand-glow)' : 'var(--bg-card)',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        transition: 'all 0.2s',
-                        color: isSelected ? 'var(--brand-primary)' : 'var(--text-primary)'
+                        position: "absolute",
+                        left: 12,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        color: "var(--brand-primary)",
                       }}
-                    >
-                      <div style={{
-                        padding: '6px',
-                        borderRadius: '8px',
-                        background: isSelected ? 'var(--brand-primary)' : 'var(--bg-elevated)',
-                        color: isSelected ? '#FFFFFF' : 'var(--text-muted)',
-                        display: 'flex'
-                      }}>
-                        <Icon size={16} />
-                      </div>
-                      <span style={{ fontSize: '13px', fontWeight: 600 }}>{r.label}</span>
-                    </div>
+                    />
                   );
-                })}
+                })()}
+                <select
+                  id="role"
+                  className="form-input"
+                  style={{ paddingLeft: 36, appearance: "none", cursor: "pointer", color: "var(--text-primary)" }}
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  required
+                >
+                  {ROLES.map((r) => (
+                    <option key={r.id} value={r.id} style={{ background: "var(--bg-card)" }}>
+                      {r.label}
+                    </option>
+                  ))}
+                </select>
+                <div style={{
+                  position: "absolute",
+                  right: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  pointerEvents: "none",
+                  color: "var(--text-muted)"
+                }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
               </div>
             </div>
             <div className="form-group">
