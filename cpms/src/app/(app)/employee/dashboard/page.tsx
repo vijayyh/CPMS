@@ -5,7 +5,8 @@ import { format } from "date-fns";
 import {
   Clock, CheckCircle2, Sun, AlertTriangle, IndianRupee,
   Calendar, Briefcase, FileText, Activity, ShieldAlert,
-  Bell, FileOutput, ShieldCheck, Contact
+  Bell, FileOutput, ShieldCheck, Contact, Users, MapPin, Target,
+  ArrowRight, Building2
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -15,301 +16,234 @@ export default function EmployeeDashboard() {
   const router = useRouter();
 
   return (
-    <div className="animate-fade-in flex flex-col gap-6 w-full max-w-7xl mx-auto pb-10">
+    <div className="animate-fade-in flex flex-col gap-8 w-full max-w-7xl mx-auto pb-12">
       
-      {/* 1. HERO SECTION (Greeting & Quick Info) */}
-      <section className="glass-panel p-6 md:p-8 rounded-2xl border border-[var(--bg-border-solid)] relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="relative z-10">
-          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Good Morning, {userName}</h1>
-          <p className="text-sm text-muted mt-1">{format(new Date(), 'EEEE, MMMM do, yyyy')}</p>
-          <div className="flex flex-wrap gap-2 mt-3">
-            <span className="px-3 py-1 text-xs font-bold rounded-full bg-[var(--brand-primary)] text-white">EMPLOYEE</span>
-            <span className="px-3 py-1 text-xs font-bold rounded-full bg-[var(--brand-secondary)] text-white">EMP-1024</span>
-            <span className="px-3 py-1 text-xs font-bold rounded-full bg-[var(--color-info)] text-white">Morning Shift (9AM - 5PM)</span>
-          </div>
+      {/* 1. HERO SECTION */}
+      <section className="glass-panel p-6 md:p-8 rounded-[var(--radius-xl)] border border-[var(--bg-border-solid)] relative overflow-hidden flex flex-col gap-6">
+        <div className="flex flex-col gap-1 relative z-10">
+          <h1 className="text-h1">Good Morning, {userName}</h1>
+          <p className="text-body font-medium text-muted">{format(new Date(), 'EEEE, MMMM do, yyyy')}</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 relative z-10 w-full md:w-auto">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--bg-border-solid)] flex-1 md:flex-none">
-            <div className="p-2 rounded-lg bg-[var(--color-info)]/20 text-[var(--color-info)]"><Briefcase size={18} /></div>
-            <div className="flex flex-col">
-              <span className="text-xs text-muted">Current Site</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">Skyline Tower A</span>
-            </div>
+        
+        <div className="flex flex-wrap items-center gap-3 relative z-10 mt-2">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] border border-[var(--brand-primary)]/20">
+            <Users size={14} /><span className="text-badge">Employee</span>
           </div>
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--bg-card)] border border-[var(--bg-border-solid)] flex-1 md:flex-none">
-            <div className="p-2 rounded-lg bg-[var(--color-warning)]/20 text-[var(--color-warning)]"><Sun size={18} /></div>
-            <div className="flex flex-col">
-              <span className="text-xs text-muted">Weather</span>
-              <span className="text-sm font-bold text-[var(--text-primary)]">28°C, Clear</span>
-            </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--brand-secondary)]/10 text-[var(--brand-secondary)] border border-[var(--brand-secondary)]/20">
+            <Contact size={14} /><span className="text-badge">EMP-1024</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-info)]/10 text-[var(--color-info)] border border-[var(--color-info)]/20">
+            <Clock size={14} /><span className="text-badge">Morning Shift</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--bg-hover)] text-[var(--text-primary)] border border-[var(--bg-border-solid)]">
+            <MapPin size={14} className="text-[var(--color-success)]" /><span className="text-badge">Skyline Tower A</span>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--bg-hover)] text-[var(--text-primary)] border border-[var(--bg-border-solid)]">
+            <Sun size={14} className="text-[var(--color-warning)]" /><span className="text-badge">28°C Clear</span>
           </div>
         </div>
       </section>
 
-      {/* 11. QUICK ACTIONS */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <button className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl glass-panel glass-panel-hoverable border border-[var(--bg-border-solid)] transition-all hover:-translate-y-1" onClick={() => router.push('/employee/attendance')}>
-          <div className="p-3 rounded-xl bg-[var(--color-success)]/10 text-[var(--color-success)]"><Clock size={24} /></div>
-          <span className="text-sm font-semibold">Mark Attendance</span>
+      {/* 2. QUICK ACTIONS */}
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <button className="flex flex-col items-start gap-4 p-5 md:p-6 rounded-[var(--radius-xl)] glass-panel glass-panel-hoverable border border-[var(--bg-border-solid)] text-left group" onClick={() => router.push('/employee/attendance')}>
+          <div className="p-3 rounded-xl bg-[var(--color-success)]/10 text-[var(--color-success)] transition-transform group-hover:scale-110"><Clock size={28} /></div>
+          <div>
+            <span className="block text-label font-bold mb-1">Mark Attendance</span>
+            <span className="block text-caption text-muted">Clock in/out</span>
+          </div>
         </button>
-        <button className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl glass-panel glass-panel-hoverable border border-[var(--bg-border-solid)] transition-all hover:-translate-y-1" onClick={() => router.push('/employee/leave')}>
-          <div className="p-3 rounded-xl bg-[var(--color-warning)]/10 text-[var(--color-warning)]"><Calendar size={24} /></div>
-          <span className="text-sm font-semibold">Request Leave</span>
+        <button className="flex flex-col items-start gap-4 p-5 md:p-6 rounded-[var(--radius-xl)] glass-panel glass-panel-hoverable border border-[var(--bg-border-solid)] text-left group" onClick={() => router.push('/employee/leave')}>
+          <div className="p-3 rounded-xl bg-[var(--color-warning)]/10 text-[var(--color-warning)] transition-transform group-hover:scale-110"><Calendar size={28} /></div>
+          <div>
+            <span className="block text-label font-bold mb-1">Request Leave</span>
+            <span className="block text-caption text-muted">View balance</span>
+          </div>
         </button>
-        <button className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl glass-panel glass-panel-hoverable border border-[var(--bg-border-solid)] transition-all hover:-translate-y-1" onClick={() => router.push('/employee/wages')}>
-          <div className="p-3 rounded-xl bg-[var(--brand-primary)]/10 text-[var(--brand-primary)]"><IndianRupee size={24} /></div>
-          <span className="text-sm font-semibold">View Payslip</span>
+        <button className="flex flex-col items-start gap-4 p-5 md:p-6 rounded-[var(--radius-xl)] glass-panel glass-panel-hoverable border border-[var(--bg-border-solid)] text-left group" onClick={() => router.push('/employee/wages')}>
+          <div className="p-3 rounded-xl bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] transition-transform group-hover:scale-110"><IndianRupee size={28} /></div>
+          <div>
+            <span className="block text-label font-bold mb-1">View Payslip</span>
+            <span className="block text-caption text-muted">Salary details</span>
+          </div>
         </button>
-        <button className="flex flex-col items-center justify-center gap-3 p-5 rounded-2xl glass-panel glass-panel-hoverable border border-[var(--bg-border-solid)] transition-all hover:-translate-y-1" onClick={() => alert('Emergency help requested!')}>
-          <div className="p-3 rounded-xl bg-[var(--color-danger)]/10 text-[var(--color-danger)]"><ShieldAlert size={24} /></div>
-          <span className="text-sm font-semibold">Emergency Help</span>
+        <button className="flex flex-col items-start gap-4 p-5 md:p-6 rounded-[var(--radius-xl)] glass-panel glass-panel-hoverable border border-[var(--color-danger)]/30 text-left group" onClick={() => alert('Emergency help requested!')}>
+          <div className="p-3 rounded-xl bg-[var(--color-danger)]/10 text-[var(--color-danger)] transition-transform group-hover:scale-110"><ShieldAlert size={28} /></div>
+          <div>
+            <span className="block text-label font-bold text-[var(--color-danger)] mb-1">Emergency Help</span>
+            <span className="block text-caption text-muted">Alert site manager</span>
+          </div>
         </button>
       </section>
 
-      {/* BENTO GRID FOR EMPLOYEE */}
+      {/* 3. BENTO GRID */}
       <section className="grid grid-cols-1 md:grid-cols-12 gap-6">
         
-        {/* 2. TODAY'S ATTENDANCE */}
-        <div className="glass-panel rounded-2xl border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-4 min-h-[220px]">
-          <div className="flex justify-between items-start p-5 border-b border-[var(--bg-border-solid)]">
-            <div>
-              <h3 className="font-bold text-[var(--text-primary)]">Today's Attendance</h3>
-              <p className="text-xs text-muted">Daily tracking</p>
-            </div>
-            <div className="px-2 py-1 text-[10px] font-bold rounded bg-[var(--color-success)]/20 text-[var(--color-success)]">PRESENT</div>
+        {/* ATTENDANCE */}
+        <div className="glass-panel rounded-[var(--radius-xl)] border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-4 overflow-hidden">
+          <div className="flex justify-between items-center p-6 border-b border-[var(--bg-border-solid)] bg-[var(--bg-card)]/50">
+            <h3 className="text-h3">Attendance</h3>
+            <span className="badge badge-success">Present</span>
           </div>
-          <div className="p-5 flex-1 flex flex-col justify-center gap-3">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-muted font-medium">Clock In</span>
-              <span className="font-semibold text-[var(--color-success)]">08:45 AM</span>
+          <div className="p-6 flex-1 flex flex-col gap-4">
+            <div className="flex justify-between items-center pb-4 border-b border-[var(--bg-border-solid)] border-dashed">
+              <span className="text-body font-medium">Clock In</span>
+              <span className="text-body font-bold text-[var(--color-success)]">08:45 AM</span>
             </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-muted font-medium">Clock Out</span>
-              <span className="font-semibold text-muted">--:-- PM</span>
+            <div className="flex justify-between items-center pb-4 border-b border-[var(--bg-border-solid)] border-dashed">
+              <span className="text-body font-medium">Clock Out</span>
+              <span className="text-body font-bold text-muted">--:-- PM</span>
             </div>
-            <div className="flex justify-between items-center text-sm mt-2 pt-2 border-t border-[var(--bg-border-solid)]">
-              <span className="font-bold text-[var(--text-primary)]">Working Hours</span>
-              <span className="font-bold text-[var(--text-primary)]">4h 15m</span>
+            <div className="flex justify-between items-center pb-4 border-b border-[var(--bg-border-solid)] border-dashed">
+              <span className="text-body font-medium">Working Hours</span>
+              <span className="text-body font-bold text-[var(--text-title)]">4h 15m</span>
             </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="font-medium text-[var(--color-warning)]">Overtime</span>
-              <span className="font-semibold text-[var(--color-warning)]">0h 0m</span>
+            <div className="flex justify-between items-center">
+              <span className="text-body font-medium">Overtime</span>
+              <span className="text-body font-bold text-[var(--color-warning)]">0h 0m</span>
             </div>
           </div>
         </div>
 
-        {/* 3. TODAY'S WAGE */}
-        <div className="glass-panel rounded-2xl border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-4 min-h-[220px]">
-          <div className="flex justify-between items-start p-5 border-b border-[var(--bg-border-solid)]">
-            <div>
-              <h3 className="font-bold text-[var(--text-primary)]">My Earnings</h3>
-              <p className="text-xs text-muted">Wage summary</p>
-            </div>
-            <div className="px-2 py-1 text-[10px] font-bold rounded bg-[var(--color-info)]/20 text-[var(--color-info)]">PROCESSING</div>
+        {/* WORK PROGRESS (REDESIGNED) */}
+        <div className="glass-panel rounded-[var(--radius-xl)] border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-4 overflow-hidden relative">
+          <div className="flex justify-between items-center p-6 border-b border-[var(--bg-border-solid)] bg-[var(--bg-card)]/50">
+            <h3 className="text-h3">Shift Progress</h3>
+            <span className="badge badge-info">Active</span>
           </div>
-          <div className="p-5 flex-1 flex flex-col justify-center gap-3">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-muted font-medium">Today's Wage</span>
-              <span className="font-semibold text-[var(--text-primary)]">₹850</span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-muted font-medium">Weekly</span>
-              <span className="font-semibold text-[var(--text-primary)]">₹5,100</span>
-            </div>
-            <div className="flex justify-between items-center text-sm mt-2 pt-2 border-t border-[var(--bg-border-solid)]">
-              <span className="font-bold text-[var(--text-primary)]">Monthly Expected</span>
-              <span className="font-bold text-[var(--color-success)]">₹23,450</span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-muted font-medium">Due Date</span>
-              <span className="font-semibold text-[var(--text-primary)]">5th Aug</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 4. WORK PROGRESS */}
-        <div className="glass-panel rounded-2xl border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-4 min-h-[220px]">
-          <div className="flex justify-between items-start p-5 border-b border-[var(--bg-border-solid)]">
-            <div>
-              <h3 className="font-bold text-[var(--text-primary)]">Work Progress</h3>
-              <p className="text-xs text-muted">Shift completion</p>
-            </div>
-          </div>
-          <div className="p-6 flex-1 flex flex-col items-center justify-center">
-            <div className="relative w-28 h-28 mb-3">
+          <div className="p-6 flex-1 flex flex-col items-center justify-center gap-6">
+            <div className="relative w-40 h-40">
               <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--bg-border-solid)" strokeWidth="8" />
-                <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--brand-primary)" strokeWidth="8" strokeDasharray="251.2" strokeDashoffset="100.48" className="transition-all duration-1000 ease-out" />
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--bg-border-solid)" strokeWidth="6" />
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--brand-primary)" strokeWidth="6" strokeDasharray="251.2" strokeDashoffset="100.48" strokeLinecap="round" className="transition-all duration-1000 ease-out" />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-2xl font-bold text-[var(--text-primary)]">60%</span>
-                <span className="text-[10px] text-muted">Completed</span>
+                <span className="text-4xl font-extrabold text-[var(--text-title)]">60<span className="text-xl">%</span></span>
+                <span className="text-caption text-muted mt-1 uppercase tracking-wide">Completed</span>
               </div>
             </div>
-            <div className="w-full flex justify-between text-xs">
-              <span className="text-muted truncate mr-2">Target: Lay Foundation</span>
-              <span className="font-semibold text-[var(--color-warning)] whitespace-nowrap">3h left</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 5. ASSIGNED PROJECT */}
-        <div className="glass-panel rounded-2xl border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-6 min-h-[220px]">
-          <div className="flex justify-between items-start p-5 border-b border-[var(--bg-border-solid)]">
-            <div>
-              <h3 className="font-bold text-[var(--text-primary)]">Assigned Project</h3>
-              <p className="text-xs text-muted">Current site details</p>
-            </div>
-            <div className="px-2 py-1 text-[10px] font-bold rounded bg-[var(--color-success)]/20 text-[var(--color-success)]">ACTIVE</div>
-          </div>
-          <div className="p-5 flex-1 flex flex-col justify-center">
-            <h4 className="text-lg font-bold text-[var(--text-title)] mb-4">Skyline Tower A</h4>
-            <div className="grid grid-cols-2 gap-y-4 gap-x-2">
-              <div>
-                <span className="block text-xs text-muted mb-1">Location</span>
-                <span className="font-semibold text-sm text-[var(--text-primary)]">Andheri East, Mumbai</span>
+            <div className="w-full grid grid-cols-2 gap-4 mt-2">
+              <div className="flex flex-col items-center p-3 rounded-lg bg-[var(--bg-hover)] border border-[var(--bg-border-solid)]">
+                <span className="text-caption text-muted mb-1">Hours Left</span>
+                <span className="text-label font-bold text-[var(--color-warning)]">3h 45m</span>
               </div>
-              <div>
-                <span className="block text-xs text-muted mb-1">Manager</span>
-                <span className="font-semibold text-sm text-[var(--text-primary)] flex items-center gap-1"><Contact size={14}/> Rajesh Kumar</span>
-              </div>
-              <div>
-                <span className="block text-xs text-muted mb-1">Phase</span>
-                <span className="font-semibold text-sm text-[var(--color-info)]">Foundation</span>
-              </div>
-              <div>
-                <span className="block text-xs text-muted mb-1">Finish Date</span>
-                <span className="font-semibold text-sm text-[var(--text-primary)]">Dec 2026</span>
+              <div className="flex flex-col items-center p-3 rounded-lg bg-[var(--bg-hover)] border border-[var(--bg-border-solid)]">
+                <span className="text-caption text-muted mb-1">Target</span>
+                <span className="text-label font-bold text-[var(--text-title)] text-center line-clamp-1 w-full px-1">Foundation</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 6. TODAY'S TASKS */}
-        <div className="glass-panel rounded-2xl border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-6 min-h-[220px]">
-          <div className="flex justify-between items-start p-5 border-b border-[var(--bg-border-solid)]">
-            <div>
-              <h3 className="font-bold text-[var(--text-primary)]">Today's Tasks</h3>
-              <p className="text-xs text-muted">Your responsibilities</p>
-            </div>
+        {/* SALARY / EARNINGS */}
+        <div className="glass-panel rounded-[var(--radius-xl)] border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-4 overflow-hidden">
+          <div className="flex justify-between items-center p-6 border-b border-[var(--bg-border-solid)] bg-[var(--bg-card)]/50">
+            <h3 className="text-h3">Earnings</h3>
+            <span className="badge badge-warning">Processing</span>
           </div>
-          <div className="flex-1 flex flex-col">
-            <div className="flex items-center gap-4 p-4 border-b border-[var(--bg-border-solid)]">
-              <div className="p-2 rounded bg-[var(--color-success)]/10 text-[var(--color-success)]"><CheckCircle2 size={16}/></div>
-              <div className="flex-1">
-                <div className="font-semibold text-sm text-[var(--text-primary)]">Unload Cement Bags</div>
-                <div className="text-xs text-muted mt-0.5">09:00 AM - 11:00 AM</div>
-              </div>
-              <div className="text-[10px] font-bold px-2 py-1 rounded bg-[var(--color-success)]/10 text-[var(--color-success)]">Completed</div>
+          <div className="p-6 flex-1 flex flex-col justify-between">
+            <div className="flex flex-col items-center text-center pb-6 border-b border-[var(--bg-border-solid)]">
+              <span className="text-caption text-muted mb-2 uppercase tracking-wide">Today's Wage</span>
+              <span className="text-[40px] font-black leading-none text-[var(--brand-primary)]">₹850</span>
             </div>
-            <div className="flex items-center gap-4 p-4 border-b border-[var(--bg-border-solid)]">
-              <div className="p-2 rounded bg-[var(--color-warning)]/10 text-[var(--color-warning)]"><Clock size={16}/></div>
-              <div className="flex-1">
-                <div className="font-semibold text-sm text-[var(--text-primary)]">Lay Foundation Sector B</div>
-                <div className="text-xs text-muted mt-0.5">11:30 AM - 04:00 PM</div>
+            <div className="flex flex-col gap-4 mt-6">
+              <div className="flex justify-between items-center">
+                <span className="text-body font-medium">Weekly Accrued</span>
+                <span className="text-label font-bold text-[var(--text-title)]">₹5,100</span>
               </div>
-              <div className="text-[10px] font-bold px-2 py-1 rounded bg-[var(--color-warning)]/10 text-[var(--color-warning)]">In Progress</div>
-            </div>
-            <div className="flex items-center gap-4 p-4 opacity-60">
-              <div className="p-2 rounded bg-[var(--bg-hover)] text-muted"><Activity size={16}/></div>
-              <div className="flex-1">
-                <div className="font-semibold text-sm text-[var(--text-primary)]">Site Cleanup</div>
-                <div className="text-xs text-muted mt-0.5">04:30 PM - 05:00 PM</div>
+              <div className="flex justify-between items-center px-4 py-3 bg-[var(--color-success)]/10 rounded-lg border border-[var(--color-success)]/20">
+                <span className="text-body font-bold text-[var(--color-success)]">Monthly Est.</span>
+                <span className="text-h4 text-[var(--color-success)]">₹23,450</span>
               </div>
-              <div className="text-[10px] font-bold px-2 py-1 rounded bg-[var(--bg-border)] text-muted">Pending</div>
+              <div className="flex justify-between items-center">
+                <span className="text-caption text-muted">Next Payout</span>
+                <span className="text-caption font-medium text-[var(--text-title)]">5th August</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* 10. MY PERFORMANCE */}
-        <div className="glass-panel rounded-2xl border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-4 min-h-[220px]">
-          <div className="flex justify-between items-start p-5 border-b border-[var(--bg-border-solid)]">
-            <div>
-              <h3 className="font-bold text-[var(--text-primary)]">Performance</h3>
-              <p className="text-xs text-muted">Monthly stats</p>
-            </div>
-          </div>
-          <div className="p-5 flex-1 flex flex-col justify-center gap-3">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-muted font-medium">Attendance %</span>
-              <span className="font-bold text-[var(--color-success)]">98%</span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-muted font-medium">Productivity</span>
-              <span className="font-bold text-[var(--color-info)]">Excellent</span>
-            </div>
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-muted font-medium">Tasks Done</span>
-              <span className="font-semibold text-[var(--text-primary)]">45/48</span>
-            </div>
-            <div className="flex justify-between items-center text-sm mt-2 pt-2 border-t border-[var(--bg-border-solid)]">
-              <span className="font-bold text-[var(--text-primary)]">Monthly Rating</span>
-              <span className="font-bold text-[var(--color-warning)] text-base">4.8 ★</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 9. LEAVE */}
-        <div className="glass-panel rounded-2xl border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-4 min-h-[220px]">
-          <div className="flex justify-between items-start p-5 border-b border-[var(--bg-border-solid)]">
-            <div>
-              <h3 className="font-bold text-[var(--text-primary)]">Leave Balance</h3>
-              <p className="text-xs text-muted">Available time off</p>
-            </div>
-          </div>
-          <div className="p-5 flex flex-col gap-3 flex-1 justify-center">
-            <div className="flex justify-between items-center bg-[var(--bg-hover)] p-3 rounded-xl border border-[var(--bg-border-solid)]">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-[var(--color-info)]/10 text-[var(--color-info)]"><Calendar size={16}/></div>
-                <span className="font-semibold text-sm text-[var(--text-primary)]">Casual Leave</span>
-              </div>
-              <span className="font-bold text-lg text-[var(--text-primary)]">12</span>
-            </div>
-            <div className="flex justify-between items-center bg-[var(--bg-hover)] p-3 rounded-xl border border-[var(--bg-border-solid)]">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-[var(--color-danger)]/10 text-[var(--color-danger)]"><Activity size={16}/></div>
-                <span className="font-semibold text-sm text-[var(--text-primary)]">Sick Leave</span>
-              </div>
-              <span className="font-bold text-lg text-[var(--text-primary)]">5</span>
-            </div>
-            <button className="mt-1 w-full py-2.5 bg-[var(--brand-primary)] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity text-sm">
-              Apply Leave
+        {/* ASSIGNED PROJECT */}
+        <div className="glass-panel rounded-[var(--radius-xl)] border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-6 overflow-hidden">
+          <div className="flex justify-between items-center p-6 border-b border-[var(--bg-border-solid)] bg-[var(--bg-card)]/50">
+            <h3 className="text-h3">Assigned Project</h3>
+            <button className="text-caption font-semibold text-[var(--brand-primary)] flex items-center gap-1 hover:underline">
+              View Details <ArrowRight size={14}/>
             </button>
           </div>
+          <div className="p-6 flex-1 flex flex-col">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-secondary)] flex items-center justify-center text-white shadow-lg">
+                <Building2 size={24} />
+              </div>
+              <div>
+                <h4 className="text-h4 mb-1">Skyline Tower A</h4>
+                <p className="text-caption text-muted flex items-center gap-1"><MapPin size={12}/> Andheri East, Mumbai</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-y-8 gap-x-4">
+              <div className="flex flex-col gap-2">
+                <span className="text-caption uppercase tracking-wider text-muted font-semibold flex items-center gap-2"><Contact size={14}/> Manager</span>
+                <span className="text-label font-bold text-[var(--text-title)]">Rajesh Kumar</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-caption uppercase tracking-wider text-muted font-semibold flex items-center gap-2"><Target size={14}/> Current Phase</span>
+                <span className="badge badge-info self-start mt-1">Foundation</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-caption uppercase tracking-wider text-muted font-semibold flex items-center gap-2"><Calendar size={14}/> Finish Date</span>
+                <span className="text-label font-bold text-[var(--text-title)]">Dec 2026</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-caption uppercase tracking-wider text-muted font-semibold flex items-center gap-2"><Users size={14}/> Crew Size</span>
+                <span className="text-label font-bold text-[var(--text-title)]">145 Active</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* 8. SAFETY & 7. ANNOUNCEMENTS */}
-        <div className="col-span-1 md:col-span-4 flex flex-col gap-6 min-h-[220px]">
-          
-          <div className="glass-panel rounded-2xl border border-[var(--bg-border-solid)] overflow-hidden flex-1 flex flex-col">
-            <div className="p-4 border-b border-[var(--bg-border-solid)] bg-[var(--color-danger)]/10 flex items-center justify-between">
-              <h3 className="font-bold text-sm text-[var(--color-danger)] flex items-center gap-2">
-                <ShieldCheck size={16}/> Safety Score: 100/100
-              </h3>
-            </div>
-            <div className="p-4 flex flex-col gap-3 flex-1 justify-center bg-[var(--bg-card)]">
-              <div className="flex items-center gap-3 text-sm font-medium text-[var(--text-primary)]">
-                <AlertTriangle size={16} className="text-[var(--color-warning)] flex-shrink-0"/>
-                <span>Helmet mandatory on site!</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm font-medium text-[var(--text-primary)]">
-                <CheckCircle2 size={16} className="text-[var(--color-success)] flex-shrink-0"/>
-                <span>PPE Checklist Verified</span>
-              </div>
-            </div>
+        {/* TODAY'S TASKS (REDESIGNED) */}
+        <div className="glass-panel rounded-[var(--radius-xl)] border border-[var(--bg-border-solid)] flex flex-col col-span-1 md:col-span-6 overflow-hidden">
+          <div className="flex justify-between items-center p-6 border-b border-[var(--bg-border-solid)] bg-[var(--bg-card)]/50">
+            <h3 className="text-h3">Today's Tasks</h3>
+            <span className="badge badge-secondary">3 Remaining</span>
           </div>
+          <div className="flex-1 flex flex-col p-2">
+            
+            <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-[var(--bg-hover)] transition-colors group cursor-pointer border-b border-[var(--bg-border-solid)] last:border-0">
+              <div className="mt-1 p-2 rounded-full bg-[var(--color-success)]/10 text-[var(--color-success)]"><CheckCircle2 size={20}/></div>
+              <div className="flex-1 flex flex-col gap-1">
+                <div className="flex justify-between items-start">
+                  <span className="text-label font-bold line-through opacity-70">Unload Cement Bags</span>
+                  <span className="badge badge-success scale-90 origin-right">Done</span>
+                </div>
+                <span className="text-caption text-muted">09:00 AM - 11:00 AM</span>
+              </div>
+            </div>
 
-          <div className="glass-panel rounded-2xl border border-[var(--bg-border-solid)] overflow-hidden flex-1 flex flex-col">
-            <div className="p-4 border-b border-[var(--bg-border-solid)] flex items-center gap-2 bg-[var(--bg-hover)]">
-              <Bell size={16} className="text-[var(--color-info)]"/>
-              <h3 className="font-bold text-sm text-[var(--text-primary)]">Announcements</h3>
+            <div className="flex items-start gap-4 p-4 rounded-lg bg-[var(--bg-hover)] transition-colors group cursor-pointer border-b border-[var(--bg-border-solid)] last:border-0 border-l-2 border-l-[var(--color-warning)]">
+              <div className="mt-1 p-2 rounded-full bg-[var(--color-warning)]/10 text-[var(--color-warning)]"><Clock size={20}/></div>
+              <div className="flex-1 flex flex-col gap-1">
+                <div className="flex justify-between items-start">
+                  <span className="text-label font-bold text-[var(--text-title)]">Lay Foundation Sector B</span>
+                  <span className="badge badge-warning scale-90 origin-right">In Progress</span>
+                </div>
+                <span className="text-caption font-semibold text-[var(--brand-primary)]">11:30 AM - 04:00 PM</span>
+              </div>
             </div>
-            <div className="p-4 text-sm text-muted bg-[var(--bg-card)] flex-1">
-              <p className="mb-2"><span className="font-semibold text-[var(--text-primary)]">Tomorrow:</span> Site inspection by clients. Ensure cleanliness.</p>
-              <p className="text-[10px] uppercase font-bold text-muted opacity-80 mt-2">Posted by Admin • 2h ago</p>
+
+            <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-[var(--bg-hover)] transition-colors group cursor-pointer border-b border-[var(--bg-border-solid)] last:border-0">
+              <div className="mt-1 p-2 rounded-full border-2 border-[var(--text-muted)] text-[var(--text-muted)] flex items-center justify-center"><div className="w-5 h-5"/></div>
+              <div className="flex-1 flex flex-col gap-1">
+                <div className="flex justify-between items-start">
+                  <span className="text-label font-bold text-[var(--text-title)]">Site Cleanup</span>
+                  <span className="badge text-muted border border-dashed border-[var(--text-muted)] scale-90 origin-right bg-transparent">Pending</span>
+                </div>
+                <span className="text-caption text-muted">04:30 PM - 05:00 PM</span>
+              </div>
             </div>
+
           </div>
-
         </div>
 
       </section>

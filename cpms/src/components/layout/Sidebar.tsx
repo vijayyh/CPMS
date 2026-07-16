@@ -124,7 +124,6 @@ export default function Sidebar() {
                 >
                   <span className="nav-icon">{item.icon}</span>
                   {!collapsed && <span className="nav-label">{item.label}</span>}
-                  {active && !collapsed && <span className="active-glow" />}
                 </Link>
               );
             }
@@ -324,9 +323,14 @@ export default function Sidebar() {
           font-weight: 700;
           color: var(--text-muted);
           text-transform: uppercase;
-          letter-spacing: 0.8px;
-          margin-bottom: 8px;
-          padding-left: 12px;
+          letter-spacing: 1px;
+          margin-bottom: 12px;
+          margin-top: 16px;
+          padding-left: 16px;
+        }
+        
+        .sidebar-nav > .sidebar-section-title:first-child {
+          margin-top: 0;
         }
 
         .favorite-link {
@@ -353,22 +357,22 @@ export default function Sidebar() {
         .sidebar-nav {
           flex: 1;
           overflow-y: auto;
-          padding: 20px;
+          padding: 24px 20px;
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 8px;
         }
 
         .sidebar.collapsed .sidebar-nav {
-          padding: 20px 12px;
+          padding: 24px 12px;
           align-items: center;
         }
 
         .nav-item {
           display: flex;
           align-items: center;
-          gap: 12px;
-          padding: 10px 14px;
+          gap: 14px;
+          padding: 12px 16px;
           border-radius: var(--radius-md);
           font-size: 14px;
           font-weight: 500;
@@ -397,16 +401,15 @@ export default function Sidebar() {
         }
 
         .nav-item.active {
-          background: var(--brand-glow);
-          color: var(--brand-primary);
-          box-shadow: inset 0 0 0 1px rgba(255,107,53,0.2);
+          background: var(--bg-active);
+          color: var(--text-title);
           font-weight: 600;
         }
 
         .sidebar.collapsed .nav-item.active {
-          background: var(--brand-primary);
-          color: white;
-          box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+          background: var(--bg-active);
+          color: var(--text-title);
+          box-shadow: var(--shadow-float-sm);
         }
 
         .nav-icon {
@@ -414,6 +417,7 @@ export default function Sidebar() {
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
+          color: inherit;
         }
 
         .nav-label {
@@ -427,17 +431,7 @@ export default function Sidebar() {
           color: var(--text-muted);
         }
 
-        .active-glow {
-          position: absolute;
-          right: 8px;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 6px;
-          height: 6px;
-          background: var(--brand-primary);
-          border-radius: 50%;
-          box-shadow: 0 0 8px var(--brand-primary);
-        }
+
 
         .nav-children {
           padding: 4px 0 4px 38px;
@@ -505,8 +499,8 @@ export default function Sidebar() {
           font-weight: 700;
           color: var(--text-muted);
           text-transform: uppercase;
-          letter-spacing: 0.5px;
-          margin-bottom: 2px;
+          letter-spacing: 1px;
+          margin-bottom: 4px;
         }
 
         .company-info-item {
