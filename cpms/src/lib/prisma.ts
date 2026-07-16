@@ -1,12 +1,13 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/generated/prisma";
+import { Pool } from "pg";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 function createPrismaClient() {
-  // Use direct postgres URL for pg adapter if available, else fall back to DATABASE_URL
   const connectionString = process.env.DIRECT_DATABASE_URL || process.env.DATABASE_URL!;
-  const adapter = new PrismaPg({ connectionString });
+  const pool = new Pool({ connectionString });
+  const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 }
 
