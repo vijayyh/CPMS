@@ -214,7 +214,9 @@ export default function SignupPage() {
               </Link>
             </div>
           </form>
+        </div>
         
+
         <p className="login-footer">
           © 2024 CPMS · Construction Procurement & Management System
         </p>
