@@ -4,11 +4,12 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Building2, Lock, Mail, AlertCircle, Loader2, HardHat } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router   = useRouter();
-  const [email,    setEmail]    = useState("admin@cpms.com");
-  const [password, setPassword] = useState("admin123");
+  const [email,    setEmail]    = useState("");
+  const [password, setPassword] = useState("");
   const [error,    setError]    = useState("");
   const [loading,  setLoading]  = useState(false);
 
@@ -174,9 +175,11 @@ export default function LoginPage() {
               )}
             </button>
 
-            <div className="login-demo-hint">
-              <div className="login-demo-badge">Demo Credentials</div>
-              <span>admin@cpms.com / admin123</span>
+            <div style={{ textAlign: "center", marginTop: "24px", fontSize: "14px", color: "var(--text-muted)" }}>
+              Don't have an account?{" "}
+              <Link href="/signup" style={{ color: "var(--brand-primary)", fontWeight: 600, textDecoration: "none" }}>
+                Sign Up
+              </Link>
             </div>
           </form>
         </div>
