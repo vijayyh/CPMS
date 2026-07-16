@@ -1,11 +1,11 @@
 "use client";
-import "../auth.css";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Building2, Lock, Mail, User, AlertCircle, Loader2, HardHat } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import "../auth.css";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -78,9 +78,9 @@ export default function SignupPage() {
 
         <div className="login-stats">
           {[
-            { value: "30%",  label: "Faster Procurement" },
-            { value: "100%", label: "Real-time Tracking" },
-            { value: "0",    label: "Paperwork" },
+            { value: <AnimatedCounter value={100000} suffix="+" />, label: "Items Procured" },
+            { value: <AnimatedCounter value={99} suffix="%" />, label: "On-time Deliveries" },
+            { value: <AnimatedCounter value={500} suffix="+" />, label: "Trusted Partners" },
           ].map((s) => (
             <div key={s.label} className="login-stat">
               <div className="login-stat-value">{s.value}</div>

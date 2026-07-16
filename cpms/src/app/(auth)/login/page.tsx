@@ -6,13 +6,14 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Building2, Lock, Mail, AlertCircle, Loader2, HardHat } from "lucide-react";
 import Link from "next/link";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export default function LoginPage() {
-  const router   = useRouter();
-  const [email,    setEmail]    = useState("");
+  const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error,    setError]    = useState("");
-  const [loading,  setLoading]  = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,9 +68,9 @@ export default function LoginPage() {
 
         <div className="login-stats">
           {[
-            { value: "6+",   label: "Active Vendors" },
-            { value: "12+",  label: "Materials Tracked" },
-            { value: "3",    label: "Live Projects" },
+            { value: <AnimatedCounter value={1250} suffix="+" />, label: "Active Vendors" },
+            { value: <AnimatedCounter value={15000} suffix="+" />, label: "Materials Tracked" },
+            { value: <AnimatedCounter value={300} suffix="+" />, label: "Live Projects" },
           ].map((s) => (
             <div key={s.label} className="login-stat">
               <div className="login-stat-value">{s.value}</div>
@@ -190,21 +191,21 @@ export default function LoginPage() {
             </div>
 
           </form>
-          
+
           <div style={{ textAlign: "center", marginBottom: "32px", fontSize: "14px", color: "var(--text-muted)" }}>
-              Don't have an account?{" "}
-              <Link href="/signup" style={{ color: "var(--brand-primary)", fontWeight: 600, textDecoration: "none" }}>
-                Sign Up
-              </Link>
+            Don't have an account?{" "}
+            <Link href="/signup" style={{ color: "var(--brand-primary)", fontWeight: 600, textDecoration: "none" }}>
+              Sign Up
+            </Link>
           </div>
         </div>
 
         <p className="login-footer">
-          © 2024 CPMS · Construction Procurement & Management System
+          CPMS · Construction Procurement & Management System
         </p>
       </div>
 
-      
+
     </div>
   );
 }
