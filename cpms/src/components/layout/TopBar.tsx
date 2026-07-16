@@ -125,7 +125,7 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
         </div>
 
         {/* Right: Actions */}
-        <div className="topbar-actions">
+        <div className="topbar-right">
           
           {/* Quick Create */}
           <div className="relative" ref={newRef}>
