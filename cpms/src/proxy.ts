@@ -21,6 +21,34 @@ export default auth((req: any) => {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
+  const role = (req.auth?.user as any)?.role;
+
+  const restrictedForEmployee = [
+    '/vendors',
+    '/materials',
+    '/procurement',
+    '/projects',
+    '/reports',
+    '/settings',
+    '/admin',
+    '/api/vendors',
+    '/api/materials',
+    '/api/procurement',
+    '/api/projects',
+    '/api/dashboard'
+  ];
+
+  if (role === 'EMPLOYEE') {
+    if (pathname === '/dashboard') {
+      return NextResponse.redirect(new URL('/employee/dashboard', req.url));
+    }
+
+    const isRestricted = restrictedForEmployee.some(p => pathname.startsWith(p));
+    if (isRestricted) {
+      return NextResponse.redirect(new URL('/employee/dashboard', req.url));
+    }
+  }
+
   return NextResponse.next();
 });
 
