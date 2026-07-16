@@ -96,10 +96,9 @@ export default function SignupPage() {
             <div className="dot-active" style={{ width: 8, height: 8 }} />
             Construction Management Platform
           </div>
-          <div className="login-hero-pretitle" style={{ fontSize: '24px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '-12px' }}>
+          <h1 className="login-hero-title">
             Command Center for
-          </div>
-          <h1 className="login-hero-title" style={{ fontSize: '56px', lineHeight: '1.1' }}>
+            <br />
             <span className="login-hero-accent">Sustaniq Civilcon.</span>
           </h1>
           <p className="login-hero-desc" style={{ fontSize: '14px', lineHeight: '1.5', maxWidth: '420px' }}>
