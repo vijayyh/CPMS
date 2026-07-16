@@ -1,5 +1,5 @@
-import "../auth.css";
 "use client";
+import "../auth.css";
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
