@@ -70,27 +70,25 @@ export default function SignupPage() {
 
   return (
     <div className="login-shell">
+      <button 
+        onClick={toggleTheme} 
+        className="btn-icon theme-toggle" 
+        title="Toggle Theme"
+        style={{ position: 'absolute', top: '24px', right: '24px', zIndex: 100, background: 'rgba(128,128,128,0.1)', border: 'none', color: 'var(--text-primary)', padding: '10px', borderRadius: '50%', cursor: 'pointer', display: 'flex' }}
+      >
+        {isDark ? <Sun size={20} /> : <Moon size={20} />}
+      </button>
+
       {/* Animated background grid */}
       <div className="login-bg-grid" />
 
       {/* Left panel */}
       <div className="login-left">
-        <div className="login-brand" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div className="login-logo">
-              <Building2 size={24} />
-            </div>
-            <span className="login-brand-name">CPMS</span>
+        <div className="login-brand">
+          <div className="login-logo">
+            <Building2 size={24} />
           </div>
-          
-          <button 
-            onClick={toggleTheme} 
-            className="btn-icon theme-toggle" 
-            title="Toggle Theme"
-            style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'inherit', padding: '8px', borderRadius: '50%', cursor: 'pointer', display: 'flex' }}
-          >
-            {isDark ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
+          <span className="login-brand-name">CPMS</span>
         </div>
 
         <div className="login-hero">
@@ -98,13 +96,14 @@ export default function SignupPage() {
             <div className="dot-active" style={{ width: 8, height: 8 }} />
             Construction Management Platform
           </div>
-          <h1 className="login-hero-title">
-            Start Building
-            <br />
-            <span className="login-hero-accent">With Sustaniq.</span>
+          <div className="login-hero-pretitle" style={{ fontSize: '24px', fontWeight: 500, color: 'var(--text-muted)', marginBottom: '-12px' }}>
+            Command Center for
+          </div>
+          <h1 className="login-hero-title" style={{ fontSize: '56px', lineHeight: '1.1' }}>
+            <span className="login-hero-accent">Sustaniq Civilcon.</span>
           </h1>
-          <p className="login-hero-desc" style={{ fontSize: '15px', lineHeight: '1.6' }}>
-            CPMS is an internal web-based construction management platform for Sustaniq Civilcon LLP and associated entities. It covers the complete project lifecycle: scope definition, procurement, site execution, quality control, labour management, subcontractor billing, and management reporting — across 10+ simultaneous construction sites in Mumbai.
+          <p className="login-hero-desc" style={{ fontSize: '14px', lineHeight: '1.5', maxWidth: '420px' }}>
+            Internal construction ERP for Sustaniq Civilcon LLP. Streamlining procurement, site execution, quality control, and subcontractor billing across 10+ active sites in Mumbai.
           </p>
         </div>
 
