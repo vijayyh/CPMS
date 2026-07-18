@@ -13,10 +13,6 @@ export async function GET() {
     pendingIndents,
     openPOs,
     totalSpend,
-    recentPOs,
-    recentIndents,
-    vendorSpend,
-    projectBudget,
   ] = await Promise.all([
     prisma.vendor.count({ where: { status: "ACTIVE" } }),
     prisma.material.count(),
@@ -24,6 +20,14 @@ export async function GET() {
     prisma.materialIndent.count({ where: { status: { in: ["SUBMITTED", "DRAFT"] } } }),
     prisma.purchaseOrder.count({ where: { status: { in: ["DRAFT", "SENT", "ACKNOWLEDGED"] } } }),
     prisma.purchaseOrder.aggregate({ _sum: { grandTotal: true }, where: { status: { not: "CANCELLED" } } }),
+  ]);
+
+  const [
+    recentPOs,
+    recentIndents,
+    vendorSpend,
+    projectBudget,
+  ] = await Promise.all([
     prisma.purchaseOrder.findMany({
       take: 5,
       orderBy: { createdAt: "desc" },
