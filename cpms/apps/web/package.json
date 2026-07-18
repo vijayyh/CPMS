@@ -1,0 +1,51 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:push": "prisma db push --schema ../../prisma/schema.prisma",
+    "db:seed": "ts-node --skip-project --compiler-options '{\"module\":\"CommonJS\"}' ../../prisma/seed.ts",
+    "db:studio": "prisma studio --schema ../../prisma/schema.prisma",
+    "db:reset": "prisma db push --force-reset --schema ../../prisma/schema.prisma",
+    "db:generate": "prisma generate --schema ../../prisma/schema.prisma",
+    "postinstall": "pnpm run db:generate"
+  },
+  "dependencies": {
+    "@cpms/utils": "workspace:*",
+    "@auth/prisma-adapter": "^1.0.0",
+    "@hookform/resolvers": "^5.0.1",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@types/pg": "^8.20.0",
+    "bcryptjs": "^3.0.2",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.4.2",
+    "lucide-react": "^0.507.0",
+    "next": "16.2.6",
+    "next-auth": "^5.0.0-beta.28",
+    "pg": "^8.22.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-hook-form": "^7.56.4",
+    "recharts": "^2.15.3",
+    "sonner": "^2.0.3",
+    "zod": "^3.24.4",
+    "@prisma/client": "^7.8.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "prisma": "^7.8.0",
+    "tailwindcss": "^4",
+    "ts-node": "10.9.2",
+    "typescript": "^5"
+  }
+}

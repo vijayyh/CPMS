@@ -1,0 +1,63 @@
+
+> web@0.1.0 build C:\Users\Vedx6\OneDrive\Desktop\CONSRUCTION\cpms\apps\web
+> next build
+
+▲ Next.js 16.2.6 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.6s
+  Running TypeScript ...
+  Finished TypeScript in 5.7s ...
+  Collecting page data using 15 workers ...
+  Generating static pages using 15 workers (0/32) ...
+  Generating static pages using 15 workers (8/32) 
+  Generating static pages using 15 workers (16/32) 
+  Generating static pages using 15 workers (24/32) 
+✓ Generating static pages using 15 workers (32/32) in 382ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/auth/[...nextauth]
+├ ƒ /api/auth/register
+├ ƒ /api/dashboard/stats
+├ ƒ /api/materials
+├ ƒ /api/procurement/grn
+├ ƒ /api/procurement/indents
+├ ƒ /api/procurement/indents/[id]
+├ ƒ /api/procurement/orders
+├ ƒ /api/procurement/orders/[id]
+├ ƒ /api/projects
+├ ƒ /api/projects/[id]
+├ ƒ /api/projects/labour
+├ ƒ /api/vendors
+├ ƒ /api/vendors/[id]
+├ ƒ /dashboard
+├ ƒ /employee/announcements
+├ ƒ /employee/attendance
+├ ƒ /employee/dashboard
+├ ƒ /employee/leave
+├ ƒ /employee/my-project
+├ ƒ /employee/profile
+├ ƒ /employee/tasks
+├ ƒ /employee/wages
+├ ○ /login
+├ ƒ /materials
+├ ƒ /procurement/grn
+├ ƒ /procurement/indents
+├ ƒ /procurement/orders
+├ ƒ /projects
+├ ƒ /projects/[id]
+├ ƒ /projects/labour
+├ ƒ /reports
+├ ○ /signup
+├ ƒ /vendors
+└ ƒ /vendors/[id]
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
