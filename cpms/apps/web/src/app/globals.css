@@ -128,10 +128,10 @@ body {
 
 /* ─── Typography System (Premium Scale) ───────────────────────────────────── */
 
-h1, .text-h1 { font-size: 40px; font-weight: 800; letter-spacing: -1px; line-height: 1.1; color: var(--text-title); }
-h2, .text-h2 { font-size: 32px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.2; color: var(--text-title); }
-h3, .text-h3 { font-size: 22px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.3; color: var(--text-title); }
-h4, .text-h4 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; color: var(--text-title); }
+h1, .text-h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.8px; line-height: 1.1; color: var(--text-title); }
+h2, .text-h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.6px; line-height: 1.2; color: var(--text-title); }
+h3, .text-h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.3; color: var(--text-title); }
+h4, .text-h4 { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; color: var(--text-title); }
 
 .text-body { font-size: 15px; font-weight: 400; line-height: 1.6; color: var(--text-secondary); }
 .text-label { font-size: 15px; font-weight: 500; letter-spacing: 0.1px; color: var(--text-primary); }
@@ -264,19 +264,30 @@ a { color: inherit; text-decoration: none; }
 .badge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  font-size: 12px;
+  padding: 0 12px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  line-height: 1;
 }
 
 .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.2); }
 .badge-warning { background: rgba(245, 158, 11, 0.15); color: var(--color-warning); border: 1px solid rgba(245, 158, 11, 0.2); }
 .badge-danger  { background: rgba(239, 68, 68, 0.15); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2); }
 .badge-info    { background: rgba(59, 130, 246, 0.15); color: var(--color-info); border: 1px solid rgba(59, 130, 246, 0.2); }
+
+/* ─── Category Tints ────────────────────────────────────────────────────── */
+.bg-tint-attendance { background: rgba(16, 185, 129, 0.03); }
+.bg-tint-leave { background: rgba(245, 158, 11, 0.03); }
+.bg-tint-finance { background: rgba(255, 107, 53, 0.03); }
+.bg-tint-emergency { background: rgba(239, 68, 68, 0.03); }
+.bg-tint-project { background: rgba(124, 58, 237, 0.03); }
+.bg-tint-task { background: rgba(59, 130, 246, 0.03); }
 
 /* ─── Animations ────────────────────────────────────────────────────────── */
 

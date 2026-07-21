@@ -286,7 +286,7 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
           border-radius: var(--radius-full);
           padding: 8px 16px;
           width: 100%;
-          max-width: 480px;
+          max-width: 360px;
           transition: all var(--transition-base);
           box-shadow: var(--shadow-inner);
         }

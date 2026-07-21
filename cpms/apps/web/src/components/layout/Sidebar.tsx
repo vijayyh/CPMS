@@ -19,12 +19,12 @@ type NavItem = {
 };
 
 const NAV: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
-  { label: "Vendors", href: "/vendors", icon: <Building2 size={18} /> },
-  { label: "Materials", href: "/materials", icon: <Package size={18} /> },
+  { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={20} /> },
+  { label: "Vendors", href: "/vendors", icon: <Building2 size={20} /> },
+  { label: "Materials", href: "/materials", icon: <Package size={20} /> },
   {
     label: "Procurement",
-    icon: <ShoppingCart size={18} />,
+    icon: <ShoppingCart size={20} />,
     children: [
       { label: "Material Indents", href: "/procurement/indents", icon: <ClipboardList size={16} /> },
       { label: "Purchase Orders", href: "/procurement/orders", icon: <FileText size={16} /> },
@@ -33,24 +33,24 @@ const NAV: NavItem[] = [
   },
   {
     label: "Projects & Sites",
-    icon: <FolderKanban size={18} />,
+    icon: <FolderKanban size={20} />,
     children: [
       { label: "All Projects", href: "/projects", icon: <FolderKanban size={16} /> },
       { label: "Labour Logs", href: "/projects/labour", icon: <Users size={16} /> },
     ],
   },
-  { label: "Reports", href: "/reports", icon: <BarChart3 size={18} /> },
+  { label: "Reports", href: "/reports", icon: <BarChart3 size={20} /> },
 ];
 
 const EMPLOYEE_NAV: NavItem[] = [
-  { label: "Dashboard", href: "/employee/dashboard", icon: <LayoutDashboard size={18} /> },
-  { label: "My Attendance", href: "/employee/attendance", icon: <ClipboardList size={18} /> },
-  { label: "My Daily Wages", href: "/employee/wages", icon: <IndianRupee size={18} /> },
-  { label: "My Assigned Project", href: "/employee/my-project", icon: <Building2 size={18} /> },
-  { label: "Today's Tasks", href: "/employee/tasks", icon: <CheckCircle2 size={18} /> },
-  { label: "Announcements", href: "/employee/announcements", icon: <Mail size={18} /> },
-  { label: "Leave Requests", href: "/employee/leave", icon: <Calendar size={18} /> },
-  { label: "Profile", href: "/employee/profile", icon: <Users size={18} /> },
+  { label: "Dashboard", href: "/employee/dashboard", icon: <LayoutDashboard size={20} /> },
+  { label: "My Attendance", href: "/employee/attendance", icon: <ClipboardList size={20} /> },
+  { label: "My Daily Wages", href: "/employee/wages", icon: <IndianRupee size={20} /> },
+  { label: "My Assigned Project", href: "/employee/my-project", icon: <Building2 size={20} /> },
+  { label: "Today's Tasks", href: "/employee/tasks", icon: <CheckCircle2 size={20} /> },
+  { label: "Announcements", href: "/employee/announcements", icon: <Mail size={20} /> },
+  { label: "Leave Requests", href: "/employee/leave", icon: <Calendar size={20} /> },
+  { label: "Profile", href: "/employee/profile", icon: <Users size={20} /> },
 ];
 
 export default function Sidebar() {
@@ -175,7 +175,7 @@ export default function Sidebar() {
         <div className="sidebar-footer">
           {!isEmployee && (
             <Link href="/settings" className="nav-item" title={collapsed ? "Settings" : undefined}>
-              <span className="nav-icon"><Settings size={18} /></span>
+              <span className="nav-icon"><Settings size={20} /></span>
               {!collapsed && <span className="nav-label">Settings</span>}
             </Link>
           )}
@@ -184,7 +184,7 @@ export default function Sidebar() {
             onClick={() => signOut({ callbackUrl: "/login" })}
             title={collapsed ? "Log Out" : undefined}
           >
-            <span className="nav-icon"><LogOut size={18} /></span>
+            <span className="nav-icon"><LogOut size={20} /></span>
             {!collapsed && <span className="nav-label">Log Out</span>}
           </button>
 
@@ -371,7 +371,7 @@ export default function Sidebar() {
         .nav-item {
           display: flex;
           align-items: center;
-          gap: 14px;
+          gap: 16px;
           padding: 12px 16px;
           border-radius: var(--radius-md);
           font-size: 14px;
