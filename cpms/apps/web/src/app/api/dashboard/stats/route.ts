@@ -59,22 +59,22 @@ export async function GET() {
   ]);
 
   // Enrich vendor spend with names
-  const vendorIds = vendorSpend.map((v) => v.vendorId);
+  const vendorIds = vendorSpend.map((v: any) => v.vendorId);
   const vendors   = await prisma.vendor.findMany({
     where: { id: { in: vendorIds } },
     select: { id: true, name: true },
   });
-  const vendorMap = Object.fromEntries(vendors.map((v) => [v.id, v.name]));
+  const vendorMap = Object.fromEntries(vendors.map((v: any) => [v.id, v.name]));
 
-  const spendByVendor = vendorSpend.map((v) => ({
+  const spendByVendor = vendorSpend.map((v: any) => ({
     name:  vendorMap[v.vendorId] ?? "Unknown",
     spend: v._sum.grandTotal ?? 0,
   }));
 
-  const projectUtil = projectBudget.map((p) => ({
+  const projectUtil = projectBudget.map((p: any) => ({
     name:    p.name,
     budget:  p.budget,
-    spent:   p.purchaseOrders.reduce((s, o) => s + o.grandTotal, 0),
+    spent:   p.purchaseOrders.reduce((s: any, o: any) => s + o.grandTotal, 0),
     status:  p.status,
   }));
 
