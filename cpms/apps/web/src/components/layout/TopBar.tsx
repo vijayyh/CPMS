@@ -239,7 +239,7 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 24px;
+          padding: 0 32px;
           gap: 24px;
           border-radius: var(--radius-full);
         }
@@ -286,7 +286,7 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
           border-radius: var(--radius-full);
           padding: 8px 16px;
           width: 100%;
-          max-width: 360px;
+          max-width: 280px;
           transition: all var(--transition-base);
           box-shadow: var(--shadow-inner);
         }
@@ -408,8 +408,8 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
         .profile-pill {
           display: flex;
           align-items: center;
-          gap: 10px;
-          padding: 6px 12px 6px 6px;
+          gap: 12px;
+          padding: 6px 14px 6px 6px;
           background: rgba(0,0,0,0.02);
           border: 1px solid var(--bg-border);
           border-radius: var(--radius-full);

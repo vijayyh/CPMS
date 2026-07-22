@@ -19,38 +19,38 @@ type NavItem = {
 };
 
 const NAV: NavItem[] = [
-  { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={20} /> },
-  { label: "Vendors", href: "/vendors", icon: <Building2 size={20} /> },
-  { label: "Materials", href: "/materials", icon: <Package size={20} /> },
+  { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={22} /> },
+  { label: "Vendors", href: "/vendors", icon: <Building2 size={22} /> },
+  { label: "Materials", href: "/materials", icon: <Package size={22} /> },
   {
     label: "Procurement",
-    icon: <ShoppingCart size={20} />,
+    icon: <ShoppingCart size={22} />,
     children: [
-      { label: "Material Indents", href: "/procurement/indents", icon: <ClipboardList size={16} /> },
-      { label: "Purchase Orders", href: "/procurement/orders", icon: <FileText size={16} /> },
-      { label: "Goods Receipts", href: "/procurement/grn", icon: <Truck size={16} /> },
+      { label: "Material Indents", href: "/procurement/indents", icon: <ClipboardList size={18} /> },
+      { label: "Purchase Orders", href: "/procurement/orders", icon: <FileText size={18} /> },
+      { label: "Goods Receipts", href: "/procurement/grn", icon: <Truck size={18} /> },
     ],
   },
   {
     label: "Projects & Sites",
-    icon: <FolderKanban size={20} />,
+    icon: <FolderKanban size={22} />,
     children: [
-      { label: "All Projects", href: "/projects", icon: <FolderKanban size={16} /> },
-      { label: "Labour Logs", href: "/projects/labour", icon: <Users size={16} /> },
+      { label: "All Projects", href: "/projects", icon: <FolderKanban size={18} /> },
+      { label: "Labour Logs", href: "/projects/labour", icon: <Users size={18} /> },
     ],
   },
-  { label: "Reports", href: "/reports", icon: <BarChart3 size={20} /> },
+  { label: "Reports", href: "/reports", icon: <BarChart3 size={22} /> },
 ];
 
 const EMPLOYEE_NAV: NavItem[] = [
-  { label: "Dashboard", href: "/employee/dashboard", icon: <LayoutDashboard size={20} /> },
-  { label: "My Attendance", href: "/employee/attendance", icon: <ClipboardList size={20} /> },
-  { label: "My Daily Wages", href: "/employee/wages", icon: <IndianRupee size={20} /> },
-  { label: "My Assigned Project", href: "/employee/my-project", icon: <Building2 size={20} /> },
-  { label: "Today's Tasks", href: "/employee/tasks", icon: <CheckCircle2 size={20} /> },
-  { label: "Announcements", href: "/employee/announcements", icon: <Mail size={20} /> },
-  { label: "Leave Requests", href: "/employee/leave", icon: <Calendar size={20} /> },
-  { label: "Profile", href: "/employee/profile", icon: <Users size={20} /> },
+  { label: "Dashboard", href: "/employee/dashboard", icon: <LayoutDashboard size={22} /> },
+  { label: "My Attendance", href: "/employee/attendance", icon: <ClipboardList size={22} /> },
+  { label: "My Daily Wages", href: "/employee/wages", icon: <IndianRupee size={22} /> },
+  { label: "My Assigned Project", href: "/employee/my-project", icon: <Building2 size={22} /> },
+  { label: "Today's Tasks", href: "/employee/tasks", icon: <CheckCircle2 size={22} /> },
+  { label: "Announcements", href: "/employee/announcements", icon: <Mail size={22} /> },
+  { label: "Leave Requests", href: "/employee/leave", icon: <Calendar size={22} /> },
+  { label: "Profile", href: "/employee/profile", icon: <Users size={22} /> },
 ];
 
 export default function Sidebar() {
@@ -59,7 +59,7 @@ export default function Sidebar() {
   const userRole = (session?.user as any)?.role || "MANAGER";
   const isEmployee = userRole === "EMPLOYEE";
   const currentNav = isEmployee ? EMPLOYEE_NAV : NAV;
-  
+
   const [collapsed, setCollapsed] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     Procurement: true,
@@ -78,7 +78,7 @@ export default function Sidebar() {
   return (
     <div className="sidebar-wrapper">
       <aside className={`sidebar glass-panel ${collapsed ? 'collapsed' : ''}`}>
-        
+
         {/* Workspace Selector (Header) */}
         <div className="sidebar-header">
           <div className="sidebar-logo-box">
@@ -378,10 +378,10 @@ export default function Sidebar() {
           font-weight: 500;
           color: var(--text-secondary);
           background: transparent;
-          border: none;
+          border: 1px solid transparent;
           width: 100%;
           cursor: pointer;
-          transition: all var(--transition-fast);
+          transition: all var(--transition-base);
           position: relative;
           text-align: left;
         }
@@ -389,8 +389,8 @@ export default function Sidebar() {
         .sidebar.collapsed .nav-item {
           justify-content: center;
           padding: 12px;
-          width: 44px;
-          height: 44px;
+          width: 48px;
+          height: 48px;
           border-radius: var(--radius-lg);
           margin-bottom: 8px;
         }
@@ -402,13 +402,15 @@ export default function Sidebar() {
 
         .nav-item.active {
           background: var(--bg-active);
-          color: var(--text-title);
+          color: var(--brand-primary);
           font-weight: 600;
+          border-color: rgba(255, 107, 53, 0.1);
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         .sidebar.collapsed .nav-item.active {
           background: var(--bg-active);
-          color: var(--text-title);
+          color: var(--brand-primary);
           box-shadow: var(--shadow-float-sm);
         }
 
@@ -418,6 +420,11 @@ export default function Sidebar() {
           justify-content: center;
           flex-shrink: 0;
           color: inherit;
+          transition: transform var(--transition-fast);
+        }
+
+        .nav-item:hover .nav-icon {
+          transform: scale(1.05);
         }
 
         .nav-label {
