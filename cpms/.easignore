@@ -1,0 +1,8 @@
+# Ignore large web/backend folders to speed up Mobile App uploads
+apps/web/.next/
+apps/web/node_modules/
+node_modules/
+.git/
+.expo/
+dist/
+build/
