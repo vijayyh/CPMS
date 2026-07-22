@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar  from "@/components/layout/TopBar";
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "sonner";
 
 export default async function AppLayout({
   children,
@@ -24,6 +25,7 @@ export default async function AppLayout({
           <main className="page-content">{children}</main>
         </div>
       </div>
+      <Toaster position="top-right" richColors />
     </SessionProvider>
   );
 }

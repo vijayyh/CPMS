@@ -87,7 +87,7 @@ export default function Sidebar() {
           {!collapsed && (
             <div className="sidebar-workspace">
               <span className="workspace-name">CPMS Enterprise</span>
-              <span className="workspace-role">Admin Workspace</span>
+              <span className="workspace-role">{userRole} Workspace</span>
             </div>
           )}
           <button className="sidebar-collapse-btn" onClick={() => setCollapsed(!collapsed)}>

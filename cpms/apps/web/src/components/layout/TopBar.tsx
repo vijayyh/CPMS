@@ -45,6 +45,8 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
     []
   );
 
+  const isEmployee = userRole === "EMPLOYEE";
+
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -128,30 +130,32 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
         <div className="topbar-right">
           
           {/* Quick Create */}
-          <div className="relative" ref={newRef}>
-            <button className="btn-pill quick-add" onClick={() => setIsNewOpen(!isNewOpen)}>
-              <Plus size={16} />
-              <span>New</span>
-            </button>
-            
-            {isNewOpen && (
-              <div className="glass-panel menu-dropdown" style={{ width: '220px', left: 0, right: 'auto' }}>
-                <div className="menu-group">
-                  <Link href="/procurement/indents/new" className="menu-item" onClick={() => setIsNewOpen(false)}>
-                    <FileText size={14} /> New Indent
-                  </Link>
-                  <Link href="/procurement/orders/new" className="menu-item" onClick={() => setIsNewOpen(false)}>
-                    <ShoppingCart size={14} /> New Purchase Order
-                  </Link>
-                  <Link href="/projects/issues/new" className="menu-item" onClick={() => setIsNewOpen(false)}>
-                    <AlertCircle size={14} /> Log Issue
-                  </Link>
+          {!isEmployee && (
+            <div className="relative" ref={newRef}>
+              <button className="btn-pill quick-add" onClick={() => setIsNewOpen(!isNewOpen)}>
+                <Plus size={16} />
+                <span>New</span>
+              </button>
+              
+              {isNewOpen && (
+                <div className="glass-panel menu-dropdown" style={{ width: '220px', left: 0, right: 'auto' }}>
+                  <div className="menu-group">
+                    <Link href="/procurement/indents/new" className="menu-item" onClick={() => setIsNewOpen(false)}>
+                      <FileText size={14} /> New Indent
+                    </Link>
+                    <Link href="/procurement/orders/new" className="menu-item" onClick={() => setIsNewOpen(false)}>
+                      <ShoppingCart size={14} /> New Purchase Order
+                    </Link>
+                    <Link href="/projects/issues/new" className="menu-item" onClick={() => setIsNewOpen(false)}>
+                      <AlertCircle size={14} /> Log Issue
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
-          <div className="topbar-divider" />
+          {!isEmployee && <div className="topbar-divider" />}
 
           {/* Theme Toggle */}
           <button className="btn-icon theme-toggle" onClick={toggleTheme} title="Toggle Theme">
@@ -159,41 +163,43 @@ export default function TopBar({ userName, userRole }: TopBarProps) {
           </button>
 
           {/* Notifications */}
-          <div className="relative" ref={notifRef}>
-            <button className="btn-icon" onClick={() => setIsNotifOpen(!isNotifOpen)}>
-              <Bell size={18} />
-              {unreadCount > 0 && (
-                <span className="notif-badge">{unreadCount}</span>
-              )}
-            </button>
+          {!isEmployee && (
+            <div className="relative" ref={notifRef}>
+              <button className="btn-icon" onClick={() => setIsNotifOpen(!isNotifOpen)}>
+                <Bell size={18} />
+                {unreadCount > 0 && (
+                  <span className="notif-badge">{unreadCount}</span>
+                )}
+              </button>
 
-            {isNotifOpen && (
-              <div className="glass-panel notif-dropdown">
-                <div className="notif-header">
-                  <h4>Notifications</h4>
-                  <div className="notif-actions">
-                    <button onClick={markAllRead}>Mark Read</button>
-                    <button onClick={clearAll} className="danger">Clear</button>
+              {isNotifOpen && (
+                <div className="glass-panel notif-dropdown">
+                  <div className="notif-header">
+                    <h4>Notifications</h4>
+                    <div className="notif-actions">
+                      <button onClick={markAllRead}>Mark Read</button>
+                      <button onClick={clearAll} className="danger">Clear</button>
+                    </div>
+                  </div>
+                  <div className="notif-body">
+                    {notifications.length === 0 ? (
+                      <div className="notif-empty">No notifications</div>
+                    ) : (
+                      notifications.map(n => (
+                        <div key={n.id} onClick={() => markRead(n.id)} className={`notif-item ${n.read ? 'read' : 'unread'}`}>
+                          <div className={`notif-indicator bg-${n.variant}`} />
+                          <div className="notif-content">
+                            <div className="notif-type">{n.type}</div>
+                            <div className="notif-text">{n.text}</div>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
-                <div className="notif-body">
-                  {notifications.length === 0 ? (
-                    <div className="notif-empty">No notifications</div>
-                  ) : (
-                    notifications.map(n => (
-                      <div key={n.id} onClick={() => markRead(n.id)} className={`notif-item ${n.read ? 'read' : 'unread'}`}>
-                        <div className={`notif-indicator bg-${n.variant}`} />
-                        <div className="notif-content">
-                          <div className="notif-type">{n.type}</div>
-                          <div className="notif-text">{n.text}</div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
           {/* Profile */}
           <div className="relative" ref={profileRef}>
