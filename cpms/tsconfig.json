@@ -2,11 +2,22 @@
   "compilerOptions": {
     "target": "es2022",
     "module": "commonjs",
+    "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ],
+    "noEmit": true
   },
-  "include": ["prisma.config.ts"]
+  "include": [
+    "prisma.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "apps",
+    "packages"
+  ]
 }

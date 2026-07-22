@@ -2,9 +2,13 @@
         .login-shell {
           min-height: 100vh;
           display: flex;
-          background: var(--bg-base);
+          background: var(--bg-app);
           position: relative;
           overflow: hidden;
+        }
+
+        .dark .login-shell {
+          background-color: #0B0F19 !important;
         }
 
         .login-bg-grid {

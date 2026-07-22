@@ -1,21 +1,20 @@
-"use client";
-import "../auth.css";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "expo-router";
+import { Building2, Lock, Mail, AlertCircle, Loader2, Sun, Moon } from "lucide-react-native";
+import { useAuthStore } from "../core/authStore";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { Building2, Lock, Mail, AlertCircle, Loader2, HardHat, Sun, Moon } from "lucide-react";
-import Link from "next/link";
-import { AnimatedCounter } from "@/components/ui/animated-counter";
+// Minimal animated counter to match the web app without heavy dependencies
+function AnimatedCounter({ value, suffix }: { value: number, suffix: string }) {
+  return <span>{value}{suffix}</span>;
+}
 
-export default function LoginPage() {
+export default function WebLogin() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // Theme Management
+  const { setUser, setSessionToken } = useAuthStore();
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -41,17 +40,16 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-      if (result?.error) {
-        setError("Invalid email or password. Please try again.");
+      // Temporary mock login since we don't have the full API integration yet
+      if (email && password) {
+        setUser({ id: "1", name: "Admin User", email: email, role: "ADMIN" });
+        await setSessionToken("mock_token");
+        router.replace("/(tabs)");
       } else {
-        router.push("/dashboard");
-        router.refresh();
+        throw new Error("Invalid");
       }
+    } catch (err: any) {
+      setError("Invalid email or password. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -65,7 +63,7 @@ export default function LoginPage() {
         title="Toggle Theme"
         style={{ position: 'absolute', top: '24px', right: '24px', zIndex: 100, background: 'rgba(128,128,128,0.1)', border: 'none', color: 'var(--text-primary)', padding: '10px', borderRadius: '50%', cursor: 'pointer', display: 'flex' }}
       >
-        {isDark ? <Sun size={20} /> : <Moon size={20} />}
+        {isDark ? <Sun size={20} color="var(--text-primary)" /> : <Moon size={20} color="var(--text-primary)" />}
       </button>
 
       {/* Animated background grid */}
@@ -75,14 +73,14 @@ export default function LoginPage() {
       <div className="login-left">
         <div className="login-brand">
           <div className="login-logo">
-            <Building2 size={24} />
+            <Building2 size={24} color="#000" />
           </div>
           <span className="login-brand-name">CPMS</span>
         </div>
 
         <div className="login-hero">
           <div className="login-hero-tag">
-            <div className="dot-active" style={{ width: 8, height: 8 }} />
+            <div className="dot-active" style={{ width: 8, height: 8, backgroundColor: 'var(--brand-amber)', borderRadius: '50%' }} />
             Construction Management Platform
           </div>
           <h1 className="login-hero-title">
@@ -108,7 +106,6 @@ export default function LoginPage() {
           ))}
         </div>
 
-        {/* Decorative modules */}
         <div className="login-modules">
           {["Vendor Management", "Procurement Engine", "GRN Tracking", "Site Inventory", "Labour Logs", "Reports"].map((m) => (
             <span key={m} className="login-module-tag">{m}</span>
@@ -121,120 +118,115 @@ export default function LoginPage() {
         <div className="login-card">
           <div className="login-card-header">
             <div className="login-logo-sm">
-              <Building2 size={20} />
+              <Building2 size={20} color="var(--brand-amber)" />
             </div>
             <h2>Sign in to CPMS</h2>
             <p>Enter your credentials to access the management dashboard</p>
           </div>
 
           <form onSubmit={handleSubmit} className="login-form">
-            <div className="form-group">
-              <label className="form-label">Email Address</label>
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label className="form-label" style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>Email Address</label>
               <div style={{ position: "relative" }}>
-                <Mail
-                  size={15}
-                  style={{
-                    position: "absolute",
-                    left: 12,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "var(--text-muted)",
-                  }}
-                />
+                <div style={{ position: 'absolute', left: 12, top: 10, zIndex: 10 }}>
+                  <Mail size={15} color="var(--text-muted)" />
+                </div>
                 <input
                   id="email"
                   type="email"
                   className="form-input"
-                  style={{ paddingLeft: 36 }}
+                  style={{ 
+                    paddingLeft: 36, 
+                    width: '100%', 
+                    height: 40, 
+                    borderRadius: 8, 
+                    border: '1px solid var(--bg-border-strong)', 
+                    background: 'var(--bg-app)', 
+                    color: 'var(--text-primary)' 
+                  }}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@company.com"
                   required
-                  autoComplete="email"
                 />
               </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Password</label>
+            <div className="form-group" style={{ marginBottom: 24 }}>
+              <label className="form-label" style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>Password</label>
               <div style={{ position: "relative" }}>
-                <Lock
-                  size={15}
-                  style={{
-                    position: "absolute",
-                    left: 12,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "var(--text-muted)",
-                  }}
-                />
+                <div style={{ position: 'absolute', left: 12, top: 10, zIndex: 10 }}>
+                  <Lock size={15} color="var(--text-muted)" />
+                </div>
                 <input
                   id="password"
                   type="password"
                   className="form-input"
-                  style={{ paddingLeft: 36 }}
+                  style={{ 
+                    paddingLeft: 36, 
+                    width: '100%', 
+                    height: 40, 
+                    borderRadius: 8, 
+                    border: '1px solid var(--bg-border-strong)', 
+                    background: 'var(--bg-app)', 
+                    color: 'var(--text-primary)' 
+                  }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  autoComplete="current-password"
                 />
               </div>
             </div>
 
-            {error && (
+            {error ? (
               <div className="login-error">
-                <AlertCircle size={14} />
-                {error}
+                <AlertCircle size={14} color="var(--color-danger)" />
+                <span style={{ marginLeft: 8 }}>{error}</span>
               </div>
-            )}
+            ) : null}
 
             <button
               id="login-submit"
               type="submit"
               className="btn btn-primary btn-xl"
-              style={{ width: "100%", marginTop: 8 }}
+              style={{ 
+                width: "100%", 
+                marginTop: 8, 
+                height: 44, 
+                background: 'var(--brand-primary)', 
+                color: 'white', 
+                border: 'none', 
+                borderRadius: 8, 
+                fontWeight: 600, 
+                cursor: 'pointer' 
+              }}
               disabled={loading}
             >
-              {loading ? (
-                <>
-                  <Loader2 size={16} className="spin" />
-                  Authenticating…
-                </>
-              ) : (
-                "Sign In to Dashboard"
-              )}
+              {loading ? "Authenticating..." : "Sign In to Dashboard"}
             </button>
 
-            <div className="social-divider">or continue with</div>
+            <div className="social-divider" style={{ margin: '24px 0', textAlign: 'center', fontSize: 13, color: 'var(--text-muted)' }}>
+              or continue with
+            </div>
 
-            <div className="social-btn-group">
-              <button type="button" className="social-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 11.2 21.9 10.4 21.7 9.7H12V14.1H17.8C17.5 15.6 16.3 16.7 14.8 17.2V17.2C13.9 17.5 13 17.7 12 17.7C8.7 17.7 6 15 6 11.7C6 10.7 6.3 9.7 6.8 8.9L10.3 12.4L8.3 14.4C7.5 13 7 11.4 7 9.7C7 6.9 9.2 4.7 12 4.7C13.5 4.7 14.8 5.3 15.7 6.2L19.2 2.7C17.3 1.1 14.8 0 12 0C5.4 0 0 5.4 0 12C0 18.6 5.4 24 12 24V22Z" fill="currentColor" stroke="none" /></svg>
+            <div className="social-btn-group" style={{ display: 'flex', gap: 12 }}>
+              <button type="button" className="social-btn" style={{ flex: 1, height: 40, background: 'var(--bg-card)', border: '1px solid var(--bg-border-strong)', borderRadius: 8, cursor: 'pointer', color: 'var(--text-primary)' }}>
                 Google
               </button>
-              <button type="button" className="social-btn">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              <button type="button" className="social-btn" style={{ flex: 1, height: 40, background: 'var(--bg-card)', border: '1px solid var(--bg-border-strong)', borderRadius: 8, cursor: 'pointer', color: 'var(--text-primary)' }}>
                 Phone
               </button>
             </div>
 
           </form>
 
-          <div style={{ textAlign: "center", marginBottom: "32px", fontSize: "14px", color: "var(--text-muted)" }}>
-            Don't have an account?{" "}
-            <Link href="/signup" style={{ color: "var(--brand-primary)", fontWeight: 600, textDecoration: "none" }}>
-              Sign Up
-            </Link>
-          </div>
         </div>
 
-        <p className="login-footer">
+        <p className="login-footer" style={{ marginTop: 24 }}>
           CPMS · Construction Procurement & Management System
         </p>
       </div>
-
-
     </div>
   );
 }
