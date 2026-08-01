@@ -160,15 +160,17 @@ export default function Sidebar() {
       <aside className={`sidebar glass-panel ${collapsed ? 'collapsed' : ''}`}>
 
         {/* Workspace Selector (Header) */}
-        <div className="sidebar-header" style={{ cursor: "pointer" }} onClick={() => !collapsed && setWorkspaceOpen(!workspaceOpen)}>
+        <div className="sidebar-header" style={{ cursor: userRole === "VENDOR" ? "default" : "pointer" }} onClick={() => userRole !== "VENDOR" && !collapsed && setWorkspaceOpen(!workspaceOpen)}>
           <div className="sidebar-logo-box">
             <Hexagon size={20} strokeWidth={2.5} />
           </div>
           {!collapsed && (
             <div className="sidebar-workspace">
-              <span className="workspace-name">{activeProject ? activeProject.name : "CPMS Enterprise"}</span>
+              <span className="workspace-name">
+                {userRole === "VENDOR" ? "Vendor Portal" : (activeProject ? activeProject.name : "CPMS Enterprise")}
+              </span>
               <span className="workspace-role" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                {userRole} Workspace <ChevronDown size={12} />
+                {userRole} Workspace {userRole !== "VENDOR" && <ChevronDown size={12} />}
               </span>
             </div>
           )}
@@ -177,7 +179,7 @@ export default function Sidebar() {
           </button>
 
           {/* Workspace Dropdown */}
-          {!collapsed && workspaceOpen && (
+          {!collapsed && workspaceOpen && userRole !== "VENDOR" && (
             <div className="glass-panel" style={{ position: 'absolute', top: '100%', left: 20, right: 20, zIndex: 100, padding: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '4px 8px' }}>Switch Workspace</div>
               {projectsData.projects.length === 0 && <div style={{ fontSize: 12, padding: '4px 8px', color: 'var(--text-secondary)' }}>No projects found.</div>}
@@ -200,7 +202,7 @@ export default function Sidebar() {
         </div>
 
         {/* Pinned / Favorites (Optional section for premium feel) */}
-        {!collapsed && (
+        {!collapsed && userRole !== "VENDOR" && (
           <div className="sidebar-favorites">
             <div className="sidebar-section-title">Pinned</div>
             <Link href="/projects" className="favorite-link">
