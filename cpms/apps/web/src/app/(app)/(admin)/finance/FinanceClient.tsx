@@ -107,7 +107,7 @@ export default function FinanceClient({ projects, vendors }: { projects: any[], 
       {/* Back & Header */}
       <div className="flex flex-col gap-4">
         <button
-          onClick={() => router.push('/admin/dashboard')}
+          onClick={() => router.push('/dashboard')}
           className="flex items-center gap-2 text-sm font-bold text-muted hover:text-[var(--text-title)] transition-colors w-fit"
         >
           <ArrowLeft size={16} /> Back to Dashboard

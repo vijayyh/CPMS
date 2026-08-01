@@ -121,7 +121,7 @@ export default function DashboardPage() {
         {/* Hero KPI: Total Spend (Spans 8 cols) */}
         {canSeeFinance && (
           <div 
-            onClick={() => router.push('/admin/finance')}
+            onClick={() => router.push('/finance')}
             className="bento-item glass-panel glass-panel-hoverable col-span-8 finance-hero cursor-pointer group"
           >
             <div className="bento-header">

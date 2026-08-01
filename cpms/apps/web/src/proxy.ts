@@ -18,7 +18,7 @@ export default auth((req: any) => {
   const getRoleDashboard = (r: string) => {
     switch (r) {
       case 'ADMIN':
-      case 'MANAGER': return '/admin/dashboard';
+      case 'MANAGER': return '/dashboard';
       case 'VENDOR': return '/vendor/dashboard';
       case 'SITE_ENGINEER': return '/site-manager/dashboard';
       case 'ACCOUNTS': return '/accounts/dashboard';

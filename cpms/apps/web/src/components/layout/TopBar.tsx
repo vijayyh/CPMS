@@ -19,16 +19,16 @@ const INITIAL_NOTIFICATIONS = [
 ];
 
 const BREADCRUMB_MAP: Record<string, string> = {
-  "/admin/dashboard":            "Overview",
+  "/dashboard":            "Overview",
   "/vendors":                    "Vendors",
-  "/admin/materials":            "Materials Catalog",
-  "/admin/procurement/indents":  "Material Indents",
-  "/admin/procurement/orders":   "Purchase Orders",
-  "/admin/procurement/grn":      "Goods Receipts",
+  "/materials":            "Materials Catalog",
+  "/procurement/indents":  "Material Indents",
+  "/procurement/orders":   "Purchase Orders",
+  "/procurement/grn":      "Goods Receipts",
   "/projects":                   "Projects & Sites",
   "/projects/labour":            "Labour Logs",
-  "/admin/reports":              "Analytics",
-  "/admin/finance":              "Financial Dashboard",
+  "/reports":              "Analytics",
+  "/finance":              "Financial Dashboard",
   "/settings":                   "Workspace Settings",
 };
 
