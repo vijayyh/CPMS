@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { updateProjectBudget, updateProjectStatus, addLabourLog, deleteLabourLog } from "./actions";
 import { Trash2, Plus, Edit2, Users, Receipt, Building2, MapPin, Clock, CheckSquare, Camera, AlertTriangle, Calendar } from "lucide-react";
@@ -26,6 +26,25 @@ export default function ProjectClient({ project }: { project: any }) {
   const [inviteRole, setInviteRole] = useState("EMPLOYEE");
   const [isInviting, setIsInviting] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [availableUsers, setAvailableUsers] = useState<any[]>([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    if (showInviteModal) {
+      setIsLoadingUsers(true);
+      fetch(`/api/users?excludeProjectId=${project.id}`)
+        .then(res => res.json())
+        .then(data => {
+          setAvailableUsers(Array.isArray(data) ? data : []);
+          setIsLoadingUsers(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setIsLoadingUsers(false);
+        });
+    }
+  }, [showInviteModal, project.id]);
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +59,7 @@ export default function ProjectClient({ project }: { project: any }) {
         toast.success("Invitation sent successfully!");
         setShowInviteModal(false);
         setInviteEmail("");
+        setSearchQuery("");
       } else {
         const data = await res.json();
         toast.error(data.error || "Failed to invite user");
@@ -373,26 +393,94 @@ export default function ProjectClient({ project }: { project: any }) {
       {/* Invite Modal */}
       {showInviteModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-[var(--bg-card)] rounded-xl w-full max-w-md p-6 border border-[var(--bg-border)] shadow-xl relative">
-            <h3 className="text-lg font-bold text-[var(--text-title)] mb-4">Invite Team Member</h3>
-            <form onSubmit={handleInvite} className="flex flex-col gap-4">
-              <div>
-                <label className="text-xs font-bold text-muted uppercase">User Email</label>
-                <input type="email" required value={inviteEmail} onChange={e => setInviteEmail(e.target.value)} className="input-base w-full p-2 mt-1" placeholder="user@company.com" />
-              </div>
-              <div>
-                <label className="text-xs font-bold text-muted uppercase">Role for this project</label>
-                <select value={inviteRole} onChange={e => setInviteRole(e.target.value)} className="input-base w-full p-2 mt-1">
-                  <option value="MANAGER">Manager</option>
-                  <option value="SITE_ENGINEER">Site Engineer</option>
-                  <option value="PROCUREMENT">Procurement</option>
-                  <option value="ACCOUNTS">Accounts</option>
-                  <option value="EMPLOYEE">Employee / Worker</option>
-                </select>
-              </div>
-              <div className="flex gap-2 justify-end mt-4">
-                <button type="button" onClick={() => setShowInviteModal(false)} className="btn btn-outline py-2 px-4">Cancel</button>
-                <button type="submit" disabled={isInviting} className="btn btn-primary py-2 px-4">{isInviting ? "Inviting..." : "Send Invite"}</button>
+          <div className="bg-[var(--bg-card)] rounded-xl w-full max-w-md p-6 border border-[var(--bg-border)] shadow-xl relative max-h-[90vh] overflow-hidden flex flex-col">
+            <h3 className="text-lg font-bold text-[var(--text-title)] mb-4 shrink-0">Invite Team Member</h3>
+            
+            <div className="mb-4 shrink-0">
+              <input 
+                type="text" 
+                placeholder="Search by name or email to invite..." 
+                value={searchQuery}
+                onChange={e => { setSearchQuery(e.target.value); if (!availableUsers.some(u => u.email === inviteEmail)) setInviteEmail(""); }}
+                className="input-base w-full p-2 text-sm"
+              />
+            </div>
+
+            <div className="flex-1 overflow-y-auto min-h-[200px] border border-[var(--bg-border-solid)] rounded-lg p-2 mb-4 bg-[var(--bg-app)]">
+              {isLoadingUsers ? (
+                <div className="text-center p-4 text-sm text-muted">Loading users...</div>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  {['ADMIN', 'MANAGER', 'SITE_ENGINEER', 'PROCUREMENT', 'ACCOUNTS', 'EMPLOYEE'].map(roleGroup => {
+                    const filteredUsers = availableUsers.filter(u => 
+                      u.role === roleGroup && 
+                      (u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                       u.email.toLowerCase().includes(searchQuery.toLowerCase()))
+                    );
+
+                    if (filteredUsers.length === 0) return null;
+
+                    return (
+                      <div key={roleGroup} className="flex flex-col gap-1">
+                        <div className="text-[10px] font-black text-muted uppercase tracking-wider px-2 py-1 bg-[var(--bg-hover)] rounded">
+                          {roleGroup.replace('_', ' ')}
+                        </div>
+                        {filteredUsers.map(u => (
+                          <div 
+                            key={u.id} 
+                            onClick={() => { setInviteEmail(u.email); setInviteRole(u.role); }}
+                            className={`p-2 rounded-md cursor-pointer text-sm flex items-center justify-between border transition-colors ${inviteEmail === u.email ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)]/10' : 'border-transparent hover:bg-[var(--bg-hover)]'}`}
+                          >
+                            <div className="flex flex-col">
+                              <span className="font-bold text-[var(--text-title)]">{u.name}</span>
+                              <span className="text-xs text-muted">{u.email}</span>
+                            </div>
+                            {inviteEmail === u.email && <div className="w-2 h-2 rounded-full bg-[var(--brand-primary)]" />}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })}
+                  
+                  {availableUsers.length > 0 && availableUsers.filter(u => 
+                    u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    u.email.toLowerCase().includes(searchQuery.toLowerCase())
+                  ).length === 0 && (
+                    <div className="text-center p-4 text-sm text-muted">No users found.</div>
+                  )}
+                  {availableUsers.length === 0 && (
+                    <div className="text-center p-4 text-sm text-muted">No eligible users to invite.</div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <form onSubmit={handleInvite} className="flex flex-col gap-4 shrink-0 mt-auto">
+              {inviteEmail && !availableUsers.some(u => u.email === inviteEmail) && (
+                <>
+                  <div className="text-xs font-bold text-[var(--brand-primary)] bg-[var(--brand-primary)]/10 p-2 rounded">
+                    Inviting external user: {inviteEmail}
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-muted uppercase">Role for this project</label>
+                    <select value={inviteRole} onChange={e => setInviteRole(e.target.value)} className="input-base w-full p-2 mt-1">
+                      <option value="MANAGER">Manager</option>
+                      <option value="SITE_ENGINEER">Site Engineer</option>
+                      <option value="PROCUREMENT">Procurement</option>
+                      <option value="ACCOUNTS">Accounts</option>
+                      <option value="EMPLOYEE">Employee / Worker</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              <div className="flex gap-2 justify-end pt-2 border-t border-[var(--bg-border)]">
+                <button type="button" onClick={() => { setShowInviteModal(false); setSearchQuery(""); setInviteEmail(""); }} className="btn btn-outline py-2 px-4">Cancel</button>
+                <button type="submit" disabled={isInviting || (!inviteEmail && !searchQuery)} onClick={(e) => {
+                  if (!inviteEmail && searchQuery.includes('@')) {
+                    setInviteEmail(searchQuery);
+                  }
+                }} className="btn btn-primary py-2 px-4">{isInviting ? "Inviting..." : "Send Invite"}</button>
               </div>
             </form>
           </div>
