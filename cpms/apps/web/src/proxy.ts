@@ -28,8 +28,11 @@ export default auth((req: any) => {
     }
   };
 
+  const targetDashboard = getRoleDashboard(role);
   if (req.auth && (pathname === "/login" || pathname === "/" || pathname === "/dashboard")) {
-    return NextResponse.redirect(new URL(getRoleDashboard(role), req.url));
+    if (pathname !== targetDashboard) {
+      return NextResponse.redirect(new URL(targetDashboard, req.url));
+    }
   }
 
   return NextResponse.next();
