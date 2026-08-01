@@ -401,7 +401,7 @@ export default function ProjectClient({ project }: { project: any }) {
                 type="text" 
                 placeholder="Search by name or email to invite..." 
                 value={searchQuery}
-                onChange={e => { setSearchQuery(e.target.value); if (!availableUsers.some(u => u.email === inviteEmail)) setInviteEmail(""); }}
+                onChange={e => { setSearchQuery(e.target.value || ""); if (!availableUsers.some(u => u.email === inviteEmail)) setInviteEmail(""); }}
                 className="input-base w-full p-2 text-sm"
               />
             </div>
@@ -413,9 +413,9 @@ export default function ProjectClient({ project }: { project: any }) {
                 <div className="flex flex-col gap-4">
                   {['ADMIN', 'MANAGER', 'SITE_ENGINEER', 'PROCUREMENT', 'ACCOUNTS', 'EMPLOYEE'].map(roleGroup => {
                     const filteredUsers = availableUsers.filter(u => 
-                      u.role === roleGroup && 
-                      (u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                       u.email.toLowerCase().includes(searchQuery.toLowerCase()))
+                      u?.role === roleGroup && 
+                      ((u?.name || "").toLowerCase().includes((searchQuery || "").toLowerCase()) || 
+                       (u?.email || "").toLowerCase().includes((searchQuery || "").toLowerCase()))
                     );
 
                     if (filteredUsers.length === 0) return null;
@@ -432,7 +432,7 @@ export default function ProjectClient({ project }: { project: any }) {
                             className={`p-2 rounded-md cursor-pointer text-sm flex items-center justify-between border transition-colors ${inviteEmail === u.email ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)]/10' : 'border-transparent hover:bg-[var(--bg-hover)]'}`}
                           >
                             <div className="flex flex-col">
-                              <span className="font-bold text-[var(--text-title)]">{u.name}</span>
+                              <span className="font-bold text-[var(--text-title)]">{u.name || "Unknown"}</span>
                               <span className="text-xs text-muted">{u.email}</span>
                             </div>
                             {inviteEmail === u.email && <div className="w-2 h-2 rounded-full bg-[var(--brand-primary)]" />}
@@ -443,8 +443,8 @@ export default function ProjectClient({ project }: { project: any }) {
                   })}
                   
                   {availableUsers.length > 0 && availableUsers.filter(u => 
-                    u.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                    u.email.toLowerCase().includes(searchQuery.toLowerCase())
+                    (u?.name || "").toLowerCase().includes((searchQuery || "").toLowerCase()) || 
+                    (u?.email || "").toLowerCase().includes((searchQuery || "").toLowerCase())
                   ).length === 0 && (
                     <div className="text-center p-4 text-sm text-muted">No users found.</div>
                   )}
@@ -477,7 +477,7 @@ export default function ProjectClient({ project }: { project: any }) {
               <div className="flex gap-2 justify-end pt-2 border-t border-[var(--bg-border)]">
                 <button type="button" onClick={() => { setShowInviteModal(false); setSearchQuery(""); setInviteEmail(""); }} className="btn btn-outline py-2 px-4">Cancel</button>
                 <button type="submit" disabled={isInviting || (!inviteEmail && !searchQuery)} onClick={(e) => {
-                  if (!inviteEmail && searchQuery.includes('@')) {
+                  if (!inviteEmail && (searchQuery || "").includes('@')) {
                     setInviteEmail(searchQuery);
                   }
                 }} className="btn btn-primary py-2 px-4">{isInviting ? "Inviting..." : "Send Invite"}</button>
