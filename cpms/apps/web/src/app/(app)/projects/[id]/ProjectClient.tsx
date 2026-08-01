@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { toast } from "sonner";
 import { updateProjectBudget, updateProjectStatus, addLabourLog, deleteLabourLog } from "./actions";
 import { Trash2, Plus, Edit2, Users, Receipt, Building2, MapPin, Clock, CheckSquare, Camera, AlertTriangle, Calendar } from "lucide-react";
@@ -29,6 +30,11 @@ export default function ProjectClient({ project }: { project: any }) {
   const [availableUsers, setAvailableUsers] = useState<any[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (showInviteModal) {
@@ -391,8 +397,8 @@ export default function ProjectClient({ project }: { project: any }) {
       </div>
 
       {/* Invite Modal */}
-      {showInviteModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      {showInviteModal && mounted && createPortal(
+        <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
           <div className="bg-[var(--bg-card)] rounded-xl w-full max-w-md p-6 border border-[var(--bg-border)] shadow-xl relative max-h-[90vh] overflow-hidden flex flex-col">
             <h3 className="text-lg font-bold text-[var(--text-title)] mb-4 shrink-0">Invite Team Member</h3>
             
@@ -484,7 +490,8 @@ export default function ProjectClient({ project }: { project: any }) {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>
