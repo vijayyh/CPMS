@@ -1,0 +1,1 @@
+export default function accountsDashboard() { return <div className="p-6"><h1>accounts Dashboard</h1></div>; }

@@ -1,0 +1,1 @@
+export default function sitemanagerDashboard() { return <div className="p-6"><h1>site-manager Dashboard</h1></div>; }

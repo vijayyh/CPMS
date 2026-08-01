@@ -1,0 +1,27 @@
+{
+  "name": "cpms-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node dev-with-seed.mjs",
+    "turbo-dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "db:push": "turbo run db:push",
+    "db:generate": "turbo run db:generate",
+    "db:studio": "turbo run db:studio",
+    "postinstall": "prisma generate --schema prisma/schema.prisma",
+    "figma:pull": "ts-node scripts/sync-figma-tokens.ts && ts-node scripts/generate-css.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "prisma": "^7.8.0",
+    "turbo": "^2.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.8.0",
+    "effect": "^3.12.0",
+    "ts-node": "10.9.2"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
