@@ -19,17 +19,17 @@ type NavItem = {
 };
 
 const ADMIN_NAV: NavItem[] = [
-  { label: "Dashboard", href: "/admin/dashboard", icon: <LayoutDashboard size={22} /> },
+  { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard size={22} /> },
   { label: "All Projects", href: "/projects", icon: <FolderKanban size={22} /> },
   { label: "Vendors", href: "/vendors", icon: <Building2 size={22} /> },
-  { label: "Materials", href: "/admin/materials", icon: <Package size={22} /> },
+  { label: "Materials", href: "/materials", icon: <Package size={22} /> },
   {
     label: "Procurement",
     icon: <ShoppingCart size={22} />,
     children: [
-      { label: "Material Indents", href: "/admin/procurement/indents", icon: <ClipboardList size={18} /> },
-      { label: "Purchase Orders", href: "/admin/procurement/orders", icon: <FileText size={18} /> },
-      { label: "Goods Receipts", href: "/admin/procurement/grn", icon: <Truck size={18} /> },
+      { label: "Material Indents", href: "/procurement/indents", icon: <ClipboardList size={18} /> },
+      { label: "Purchase Orders", href: "/procurement/orders", icon: <FileText size={18} /> },
+      { label: "Goods Receipts", href: "/procurement/grn", icon: <Truck size={18} /> },
     ],
   },
   {
@@ -39,8 +39,8 @@ const ADMIN_NAV: NavItem[] = [
       { label: "Labour Logs", href: "/projects/labour", icon: <Users size={18} /> },
     ],
   },
-  { label: "Reports", href: "/admin/reports", icon: <BarChart3 size={22} /> },
-  { label: "Finance", href: "/admin/finance", icon: <IndianRupee size={22} /> },
+  { label: "Reports", href: "/reports", icon: <BarChart3 size={22} /> },
+  { label: "Finance", href: "/finance", icon: <IndianRupee size={22} /> },
 ];
 
 const MANAGER_NAV: NavItem[] = [
