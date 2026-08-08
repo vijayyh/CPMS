@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { requireRole, unauthorized, STAFF_ROLES, INDENT_RAISE_ROLES } from "@/lib/rbac";
 
 // ── Indents ──────────────────────────────────────────────────────────────────
 export async function GET(req: Request) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, STAFF_ROLES);
+  if (denied) return denied;
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status") ?? "";
   const indents = await prisma.materialIndent.findMany({
@@ -23,7 +26,9 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, INDENT_RAISE_ROLES);
+  if (denied) return denied;
   const body = await req.json();
   const { items, ...indentData } = body;
 

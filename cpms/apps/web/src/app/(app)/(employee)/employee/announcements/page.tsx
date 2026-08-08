@@ -1,9 +1,22 @@
-import { Mail } from "lucide-react";
+import { Mail, ShieldAlert, PartyPopper, Megaphone } from "lucide-react";
+import { prisma } from "@/lib/prisma";
+import { formatDateTime } from "@cpms/utils";
 
-export default function AnnouncementsPage() {
+const TYPE_STYLE: Record<string, { badge: string; icon: React.ReactNode }> = {
+  SAFETY:  { badge: "badge-danger",  icon: <ShieldAlert size={16} /> },
+  HOLIDAY: { badge: "badge-info",    icon: <PartyPopper size={16} /> },
+  GENERAL: { badge: "badge-muted",   icon: <Megaphone size={16} /> },
+};
+
+export default async function AnnouncementsPage() {
+  const announcements = await prisma.announcement.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 20,
+  });
+
   return (
     <div className="animate-fade-in flex flex-col w-full max-w-7xl mx-auto md:px-0" style={{ gap: '40px', paddingBottom: '96px', paddingLeft: '16px', paddingRight: '16px' }}>
-      
+
       {/* 1. HERO SECTION */}
       <section className="flex flex-col md:flex-row md:items-end justify-between" style={{ gap: '24px' }}>
         <div className="flex flex-col" style={{ gap: '8px' }}>
@@ -23,10 +36,33 @@ export default function AnnouncementsPage() {
               <h3 className="text-base font-bold tracking-tight text-[var(--text-title)] truncate">Company Notices</h3>
             </div>
           </div>
-          
-          <div className="flex-1 flex flex-col items-center justify-center text-center" style={{ padding: '32px 24px', gap: '32px' }}>
-            <span className="text-muted font-medium text-sm">No new announcements.</span>
-          </div>
+
+          {announcements.length === 0 ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-center" style={{ padding: '32px 24px', gap: '32px' }}>
+              <span className="text-muted font-medium text-sm">No new announcements.</span>
+            </div>
+          ) : (
+            <div className="flex flex-col" style={{ padding: '16px 24px', gap: '4px' }}>
+              {announcements.map((a) => {
+                const style = TYPE_STYLE[a.type] ?? TYPE_STYLE.GENERAL;
+                return (
+                  <div key={a.id} className="flex items-start border-b border-[var(--bg-border-solid)] last:border-b-0" style={{ padding: '16px 4px', gap: '16px' }}>
+                    <div className={`rounded-lg shadow-inner shrink-0`} style={{ padding: '8px', background: "var(--bg-elevated)" }}>
+                      {style.icon}
+                    </div>
+                    <div className="flex flex-col flex-1 min-w-0" style={{ gap: '4px' }}>
+                      <div className="flex items-center flex-wrap" style={{ gap: '8px' }}>
+                        <h4 className="text-sm font-bold text-[var(--text-title)]">{a.title}</h4>
+                        <span className={`badge ${style.badge}`} style={{ fontSize: 10 }}>{a.type}</span>
+                      </div>
+                      <p className="text-sm text-muted">{a.content}</p>
+                      <span className="text-[11px] text-muted font-medium">{formatDateTime(a.createdAt)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 

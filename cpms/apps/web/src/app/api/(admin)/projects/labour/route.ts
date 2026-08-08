@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { requireRole, unauthorized, STAFF_ROLES, LABOUR_WRITE_ROLES } from "@/lib/rbac";
 
 export async function GET() {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, STAFF_ROLES);
+  if (denied) return denied;
   try {
     const logs = await prisma.labour.findMany({
       include: {
@@ -20,7 +23,9 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, LABOUR_WRITE_ROLES);
+  if (denied) return denied;
   const body = await req.json();
   const log = await prisma.labour.create({
     data: {

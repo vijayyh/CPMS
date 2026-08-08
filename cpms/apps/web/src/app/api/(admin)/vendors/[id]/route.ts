@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { requireRole, unauthorized, STAFF_ROLES, PROCUREMENT_WRITE_ROLES } from "@/lib/rbac";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, STAFF_ROLES);
+  if (denied) return denied;
   const { id } = await params;
   const vendor = await prisma.vendor.findUnique({
     where: { id },
@@ -26,7 +29,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, PROCUREMENT_WRITE_ROLES);
+  if (denied) return denied;
   const { id } = await params;
   const body   = await req.json();
   const vendor = await prisma.vendor.update({ where: { id }, data: body });
@@ -35,7 +40,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
 export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, PROCUREMENT_WRITE_ROLES);
+  if (denied) return denied;
   const { id } = await params;
   await prisma.vendor.delete({ where: { id } });
   return NextResponse.json({ ok: true });

@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
+// ADMIN is intentionally excluded — that role is provisioned internally, not via self-service signup.
+const SELF_SERVICE_ROLES = ["MANAGER", "SITE_ENGINEER", "PROCUREMENT", "ACCOUNTS", "VENDOR", "EMPLOYEE"];
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -10,6 +13,13 @@ export async function POST(req: Request) {
     if (!name || !email || !password || !role) {
       return NextResponse.json(
         { error: "Missing required fields (name, email, password, role)" },
+        { status: 400 }
+      );
+    }
+
+    if (!SELF_SERVICE_ROLES.includes(role)) {
+      return NextResponse.json(
+        { error: "Invalid role selected" },
         { status: 400 }
       );
     }

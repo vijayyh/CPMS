@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { Building2, Lock, Mail, AlertCircle, Loader2, Sun, Moon } from "lucide-react-native";
-import { useAuthStore } from "../core/authStore";
+import { useAuthStore, Storage } from "../core/authStore";
+import { fetchApi } from "../core/api";
 
 // Minimal animated counter to match the web app without heavy dependencies
 function AnimatedCounter({ value, suffix }: { value: number, suffix: string }) {
@@ -40,16 +41,23 @@ export default function WebLogin() {
     setError("");
     setLoading(true);
     try {
-      // Temporary mock login since we don't have the full API integration yet
-      if (email && password) {
-        setUser({ id: "1", name: "Admin User", email: email, role: "ADMIN" });
-        await setSessionToken("mock_token");
-        router.replace("/(tabs)");
-      } else {
-        throw new Error("Invalid");
+      const response = await fetchApi('/api/auth/mobile-login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data?.token || !data?.user) {
+        setError(data?.error || "Invalid email or password. Please try again.");
+        return;
       }
+
+      await setSessionToken(data.token, data.cookieName);
+      await Storage.setItemAsync('user_profile', JSON.stringify(data.user));
+      setUser(data.user);
+      router.replace("/(tabs)");
     } catch (err: any) {
-      setError("Invalid email or password. Please try again.");
+      setError("Could not connect to the server. Please try again.");
     } finally {
       setLoading(false);
     }

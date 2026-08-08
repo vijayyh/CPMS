@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { requireRole, unauthorized, GRN_ROLES } from "@/lib/rbac";
 
 export async function GET(req: Request) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, GRN_ROLES);
+  if (denied) return denied;
   const grns = await prisma.goodsReceipt.findMany({
     include: {
       po:        { select: { poNumber: true, vendor: { select: { name: true } }, project: { select: { name: true } } } },
@@ -18,7 +21,9 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, GRN_ROLES);
+  if (denied) return denied;
   const body = await req.json();
   const { items, poId, ...grnData } = body;
 

@@ -22,9 +22,10 @@ export interface User {
 interface AuthState {
   user: User | null;
   sessionToken: string | null;
+  sessionCookieName: string | null;
   isLoading: boolean;
   setUser: (user: User | null) => void;
-  setSessionToken: (token: string | null) => Promise<void>;
+  setSessionToken: (token: string | null, cookieName?: string | null) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
 }
@@ -55,35 +56,40 @@ export const Storage = {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   sessionToken: null,
+  sessionCookieName: null,
   isLoading: true,
-  
+
   setUser: (user) => set({ user }),
-  
-  setSessionToken: async (token) => {
+
+  setSessionToken: async (token, cookieName) => {
     if (token) {
       await Storage.setItemAsync('session_token', token);
+      await Storage.setItemAsync('session_cookie_name', cookieName || 'authjs.session-token');
     } else {
       await Storage.deleteItemAsync('session_token');
+      await Storage.deleteItemAsync('session_cookie_name');
     }
-    set({ sessionToken: token });
+    set({ sessionToken: token, sessionCookieName: token ? (cookieName || 'authjs.session-token') : null });
   },
 
   logout: async () => {
     await Storage.deleteItemAsync('session_token');
+    await Storage.deleteItemAsync('session_cookie_name');
     await Storage.deleteItemAsync('user_profile');
-    set({ user: null, sessionToken: null });
+    set({ user: null, sessionToken: null, sessionCookieName: null });
   },
 
   checkAuth: async () => {
     set({ isLoading: true });
     try {
       const token = await Storage.getItemAsync('session_token');
+      const cookieName = await Storage.getItemAsync('session_cookie_name');
       const userDataStr = await Storage.getItemAsync('user_profile');
-      
+
       if (token && userDataStr) {
-        set({ sessionToken: token, user: JSON.parse(userDataStr) });
+        set({ sessionToken: token, sessionCookieName: cookieName || 'authjs.session-token', user: JSON.parse(userDataStr) });
       } else {
-        set({ sessionToken: null, user: null });
+        set({ sessionToken: null, sessionCookieName: null, user: null });
       }
     } catch (e) {
       console.error('Error checking auth', e);

@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { requireRole, unauthorized, STAFF_ROLES, PROJECT_WRITE_ROLES } from "@/lib/rbac";
 
 export async function GET(req: Request) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, STAFF_ROLES);
+  if (denied) return denied;
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status") ?? "";
   
@@ -37,7 +40,9 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, PROJECT_WRITE_ROLES);
+  if (denied) return denied;
   const body = await req.json();
 
   // Find the highest existing project code

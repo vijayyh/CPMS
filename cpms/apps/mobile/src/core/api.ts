@@ -24,17 +24,17 @@ export const API_BASE_URL = getBaseUrl();
 
 export const fetchApi = async (endpoint: string, options: RequestInit = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
-  
-  const token = useAuthStore.getState().sessionToken;
-  
+
+  const { sessionToken: token, sessionCookieName: cookieName } = useAuthStore.getState();
+
   const headers = new Headers(options.headers || {});
-  
-  // Since we are mocking browser behavior for NextAuth, we attach the session token as a cookie
-  // The exact cookie name depends on if the web app is using secure cookies (__Secure-authjs.session-token)
-  // We'll try the standard NextAuth cookie name. If they use a custom JWT in auth.ts, we'll adapt.
+
+  // /api/auth/mobile-login returns both the session token and the exact cookie name
+  // NextAuth used to encrypt it (varies by http/https), so we replay it verbatim here
+  // instead of guessing.
   const existingCookies = headers.get('Cookie') || '';
-  if (token) {
-    const sessionCookie = `authjs.session-token=${token}; next-auth.session-token=${token}`;
+  if (token && cookieName) {
+    const sessionCookie = `${cookieName}=${token}`;
     headers.set('Cookie', existingCookies ? `${existingCookies}; ${sessionCookie}` : sessionCookie);
   }
 

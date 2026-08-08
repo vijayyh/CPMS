@@ -20,7 +20,6 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   const ROLES = [
-    { id: "ADMIN", label: "Admin", icon: ShieldCheck },
     { id: "MANAGER", label: "Manager", icon: ShieldCheck },
     { id: "SITE_ENGINEER", label: "Site Engineer", icon: HardHat },
     { id: "PROCUREMENT", label: "Procurement", icon: ShoppingCart },

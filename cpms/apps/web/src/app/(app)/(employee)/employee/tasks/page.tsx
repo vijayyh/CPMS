@@ -1,9 +1,24 @@
 import { CheckCircle2 } from "lucide-react";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import TaskList from "./TaskList";
 
-export default function TasksPage() {
+export default async function TasksPage() {
+  const session = await auth();
+  const userId = (session?.user as any)?.id;
+
+  const tasks = userId
+    ? await prisma.employeeTask.findMany({
+        where: { userId },
+        orderBy: [{ status: "asc" }, { dueDate: "asc" }],
+      })
+    : [];
+
+  const remaining = tasks.filter((t) => t.status !== "COMPLETED").length;
+
   return (
     <div className="animate-fade-in flex flex-col w-full max-w-7xl mx-auto md:px-0" style={{ gap: '40px', paddingBottom: '96px', paddingLeft: '16px', paddingRight: '16px' }}>
-      
+
       {/* 1. HERO SECTION */}
       <section className="flex flex-col md:flex-row md:items-end justify-between" style={{ gap: '24px' }}>
         <div className="flex flex-col" style={{ gap: '8px' }}>
@@ -22,11 +37,14 @@ export default function TasksPage() {
               </div>
               <h3 className="text-base font-bold tracking-tight text-[var(--text-title)] truncate">Task List</h3>
             </div>
+            {tasks.length > 0 && (
+              <span className="badge badge-secondary text-xs font-bold whitespace-nowrap shrink-0 shadow-sm tracking-wide" style={{ padding: '6px 12px' }}>
+                {remaining} LEFT
+              </span>
+            )}
           </div>
-          
-          <div className="flex-1 flex flex-col items-center justify-center text-center" style={{ padding: '32px 24px', gap: '32px' }}>
-            <span className="text-muted font-medium text-sm">No tasks assigned for today.</span>
-          </div>
+
+          <TaskList tasks={tasks} />
         </div>
       </section>
 

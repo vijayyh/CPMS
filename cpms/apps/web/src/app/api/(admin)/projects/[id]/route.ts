@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { requireRole, unauthorized, STAFF_ROLES, PROJECT_WRITE_ROLES } from "@/lib/rbac";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, STAFF_ROLES);
+  if (denied) return denied;
   const { id } = await params;
   const project = await prisma.project.findUnique({
     where: { id },
@@ -31,7 +34,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return unauthorized();
+  const denied = requireRole(session, PROJECT_WRITE_ROLES);
+  if (denied) return denied;
   const { id } = await params;
   const body = await req.json();
   const project = await prisma.project.update({ where: { id }, data: body });

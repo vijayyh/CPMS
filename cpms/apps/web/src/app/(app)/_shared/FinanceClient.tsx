@@ -12,7 +12,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
 
-export default function FinanceClient({ projects, vendors }: { projects: any[], vendors: any[] }) {
+export default function FinanceClient({ projects, vendors, dashboardPath = "/dashboard" }: { projects: any[], vendors: any[], dashboardPath?: string }) {
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -107,7 +107,7 @@ export default function FinanceClient({ projects, vendors }: { projects: any[], 
       {/* Back & Header */}
       <div className="flex flex-col gap-4">
         <button
-          onClick={() => router.push('/manager/dashboard')}
+          onClick={() => router.push(dashboardPath)}
           className="flex items-center gap-2 text-sm font-bold text-muted hover:text-[var(--text-title)] transition-colors w-fit"
         >
           <ArrowLeft size={16} /> Back to Dashboard

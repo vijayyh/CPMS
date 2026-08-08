@@ -3,6 +3,12 @@ import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
+if (!process.env.AUTH_SECRET && process.env.NODE_ENV === "production") {
+  throw new Error("AUTH_SECRET environment variable must be set in production");
+}
+
+export const authSecret = process.env.AUTH_SECRET || "cpms-dev-only-insecure-secret-do-not-use-in-prod";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
@@ -60,5 +66,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
   },
-  secret: process.env.AUTH_SECRET || "cpms-super-secret-key-2024",
+  secret: authSecret,
 });

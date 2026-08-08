@@ -62,54 +62,22 @@ export default function LoginScreen() {
     await logout();
 
     try {
-      // 1. Fetch CSRF Token to satisfy NextAuth v5 requirements
-      const csrfResponse = await fetchApi('/api/auth/csrf');
-      const csrfData = await csrfResponse.json();
-      const csrfToken = csrfData?.csrfToken;
-      
-      const setCookieHeader = csrfResponse.headers.get('set-cookie');
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      
-      // Extract the CSRF cookie to send back
-      if (setCookieHeader) {
-        const match = setCookieHeader.match(/(?:authjs\.csrf-token|next-auth\.csrf-token)=([^;]+)/);
-        if (match) {
-          headers['Cookie'] = match[0];
-        }
-      }
-
-      // 2. Submit credentials
-      const response = await fetchApi('/api/auth/callback/credentials', {
+      const response = await fetchApi('/api/auth/mobile-login', {
         method: 'POST',
-        headers,
-        body: JSON.stringify({ email, password, redirect: false, csrfToken }),
+        body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
-        Alert.alert('Login Failed', 'Invalid email or password.');
+      const data = await response.json();
+
+      if (!response.ok || !data?.token || !data?.user) {
+        Alert.alert('Login Failed', data?.error || 'Invalid email or password.');
         setLoading(false);
         return;
       }
 
-      const sessionCookieHeader = response.headers.get('set-cookie');
-      let token = null;
-      if (sessionCookieHeader) {
-        const match = sessionCookieHeader.match(/(?:authjs\.session-token|next-auth\.session-token)=([^;]+)/);
-        if (match && match[1]) token = match[1];
-      }
-
-      const sessionResponse = await fetchApi('/api/auth/session', {
-        headers: token ? { 'Cookie': `authjs.session-token=${token}` } : {},
-      });
-      const sessionData = await sessionResponse.json();
-
-      if (sessionData && sessionData.user) {
-        if (token) await setSessionToken(token);
-        await Storage.setItemAsync('user_profile', JSON.stringify(sessionData.user));
-        setUser(sessionData.user);
-      } else {
-        Alert.alert('Login Failed', 'Could not retrieve session data.');
-      }
+      await setSessionToken(data.token, data.cookieName);
+      await Storage.setItemAsync('user_profile', JSON.stringify(data.user));
+      setUser(data.user);
     } catch (error) {
       Alert.alert('Network Error', 'Could not connect to the server.');
     } finally {
